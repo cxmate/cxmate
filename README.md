@@ -39,6 +39,7 @@ from cxmate.service inport Service, Stream
 class MyEchoService(Service):
     """
     MyService is a subclass 
+    """
     
     def process(self, input_stream):
         """
