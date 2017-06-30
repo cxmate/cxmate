@@ -11,11 +11,11 @@ import (
 
 //Error messages for http replies.
 const (
-	specRequiresGetMethodMessage       = "You must use the GET method with this endpoint."
-	couldNotGenerateSpecMessage        = "Could not generate a specification for this service."
-	methodNotAllowedMessage            = "You must use the POST method with this endpoint."
-	unsupportedMediaTypeMessage        = "You must set the content type header to application/json."
-	errorEstablishingConnectionMessage = "Failed to establish a client connection to the backing service. Try again later or contact the service author."
+	specRequiresGetMethodMessage       = "you must use the GET method with this endpoint"
+	couldNotGenerateSpecMessage        = "could not generate a specification for this service"
+	methodNotAllowedMessage            = "you must use the POST method with this endpoint"
+	unsupportedMediaTypeMessage        = "you must set the content type header to application/json"
+	errorEstablishingConnectionMessage = "failed to establish a client connection to the backing service. Try again later or contact the service author"
 )
 
 //Mate holds the configuration and connection the backing service
@@ -45,21 +45,21 @@ func NewMate() *Mate {
 func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 	logDebugln("request recieved")
 	if req.Method != "POST" {
-		writeHTTPError(res, methodNotAllowedMessage, http.StatusMethodNotAllowed)
+		writeHTTPError(res, m.Config.Service.Name, methodNotAllowedMessage, http.StatusMethodNotAllowed)
 		return
 	}
 	if req.Header.Get("Content-Type") != "application/json" {
-		writeHTTPError(res, unsupportedMediaTypeMessage, http.StatusUnsupportedMediaType)
+		writeHTTPError(res, m.Config.Service.Name, unsupportedMediaTypeMessage, http.StatusUnsupportedMediaType)
 		return
 	}
 	stream, err := m.Conn.NewServiceStream()
 	if err != nil {
-		writeHTTPError(res, errorEstablishingConnectionMessage, http.StatusFailedDependency)
+		writeHTTPError(res, m.Config.Service.Name, errorEstablishingConnectionMessage, http.StatusFailedDependency)
 		return
 	}
 	err = m.processCX(stream, req.URL.Query(), req.Body, res)
 	if err != nil {
-		writeHTTPError(res, err.Error(), http.StatusInternalServerError)
+		writeHTTPError(res, m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }

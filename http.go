@@ -16,7 +16,7 @@ type HTTPResponse struct {
 
 //HTTPError An error message
 type HTTPError struct {
-	Code    string `json:"code"`
+	Type    string `json:"type"`
 	Message string `json:"message"`
 	Link    string `json:"link"`
 	Status  int    `json:"status"`
@@ -24,9 +24,9 @@ type HTTPError struct {
 
 //NewHTTPError creates a new Error linking back to cxmate.
 //Use this to transmit Errors back in a Response to the client.
-func NewHTTPError(message string, status int) *HTTPError {
+func NewHTTPError(service string, message string, status int) *HTTPError {
 	return &HTTPError{
-		Code:    fmt.Sprint("cy:cxmate/", status),
+		Type:    fmt.Sprint("urn:cytoscape:ci:cxmate:", service, ":", status),
 		Message: message,
 		Link:    "http://github.com/ericsage/cxmate",
 		Status:  status,
@@ -49,9 +49,9 @@ func (r *HTTPResponse) toJSON(w io.Writer) {
 }
 
 //writeHTTPError is a convience function for writing a single error message back to an http client.
-func writeHTTPError(res http.ResponseWriter, message string, httpStatus int) {
+func writeHTTPError(res http.ResponseWriter, service string, message string, httpStatus int) {
 	logDebugln("writing http error into an http response writer")
-	e := NewHTTPError(message, httpStatus)
+	e := NewHTTPError(service, message, httpStatus)
 	r := NewHTTPResponse("", []*HTTPError{e})
 	res.WriteHeader(httpStatus)
 	r.toJSON(res)
