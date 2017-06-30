@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package proto;
+
+//import "google/protobuf/any.proto";
+
+//********** SERVICE DEFINITION **********//
+//A cxMate service must implement some or all of the method
+//signatures in the service block.
+
+service cxMateService {
+  //StreamElements allows cxMate to stream one or more networks to a service
+  //which can then stream one or more networks back.
+  rpc StreamNetworks (stream NetworkElement) returns (stream NetworkElement) {}
+}
+
+//********** INPUT/OUTPUT MESSAGES **********//
+
+//NetworkElement is a wrapper that constains a networkId, which is used to allow
+//StreamNetworks to send and receive more than one network, networks are distinguished by there id.
+//NetworkElement is also a wrapper for exactly one element. Some elements do not exist in CX,
+//like Parameter and Error, which are special elements used to communicate out of band information
+//between cxMate and a service. The other elements corrospond to an aspect in a CX document. These
+//elements should be used to build networks, and turn networks back into elements cxMate can understand.
+message NetworkElement {
+  int64 networkId = 1;
+  oneof element {
+    Parameter parameter = 2;
+    Error error = 3;
+    Node node = 4;
+    Edge edge = 5;
+    NodeAttribute nodeAttribute = 6;
+    EdgeAttribute edgeAttribute = 7;
+    NetworkAttribute networkAttribute = 8;
+    CartesianLayout cartesianLayout = 9;
+  }
+}
+
+//********** UTILITY MESSAGES **********//
+//These are messages which may be passed as NetworkElements, but really are not part of a Network.
+//They are out of band messages used to send and receive addititional information between a service and cxMate.
+
+//Parameter represents a named value passed from cxMate to the service.
+//A service should never send a Parameter to cxMate, it will be discarded.
+//Parameters are usually used to pass query string parameters (?key=value pairs in a URL)
+//to a service for small tweaks to the way a service runs.
+message Parameter {
+  string name = 1;
+  string value = 2;
+}
+
+//Error represents an error from either cxMate or the service. Errors sent
+//from the service to cxMate will be encoded in the final JSON response returned to
+//the REST client. Sending back good error messages is good practice.
+message Error {
+  int64 status = 1;
+  string code = 2;
+  string message = 3;
+  string link = 4;
+}
+
+//********** CX ASPECT MESSAGES **********//
+//These are messages that corrospond to CX aspects. They are annotated with the json keys you would find
+//in a CX file. For instance, a node element in CX can have an attached name with the "n" key, but cxMate turns this
+//into a name field. Longer field names are free using protocol buffers, and it makes code easier to read and the purpose
+//of each field clear.
+
+//To assemble a network from CX elements, it's useful to have read the CX specification document, or some tutorial on CX.
+//In short, basic elements like Node and Edge are straightforward, and a network can be assembled by connecting Edge source and target Ids
+//to their corrosponding Nodes. Other aspects usually link to a node or edge by including an edgeId or nodeId. You can think of CX as a
+//hyperlinked document that you are rendering, and must resolve the links.
+
+//Note that Element order is not garunteed by CX. It is possible to receive an edge that has a sourceId that references a node that does not
+//yet exist. Depending on how important correctness is for your program, you may elect to optimistcally create the node, or perhaps you may
+//keep the edge in a list until the node arrives. This is a feature of CX, cxMate always streams CX documents, allowing cxMate to process large
+//networks, and cannot resolve this ordering for you presently.
+
+//Node represents a single node in a network.
+message Node {
+  int64 id = 1 [ json_name = "@id" ];
+  string name = 2 [ json_name = "n" ];
+  string represents = 3 [ json_name = "r" ];
+}
+
+//Edge represents a single edge in a network.
+message Edge {
+  int64 id = 1 [ json_name = "@id" ];
+  int64 sourceId = 2 [ json_name = "s" ];
+  int64 targetId = 3 [ json_name = "t" ];
+  string interaction = 4 [ json_name = "i" ];
+}
+
+//NodeAttribute represents a single attribute attached to a node.
+message NodeAttribute {
+  int64 nodeId = 1 [ json_name = "po" ];
+  string name = 2 [ json_name = "n" ];
+//  google.protobuf.Any value = 3 [ json_name = "v" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+}
+
+//EdgeAttribute represents a single attribute attached to an edge.
+message EdgeAttribute {
+  int64 edgeId = 1 [ json_name = "po" ];
+  string name = 2 [ json_name = "n" ];
+//  google.protobuf.Any value = 3 [ json_name = "v" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+}
+
+//NetworkAttribute represents a single attribute attached to a network.
+message NetworkAttribute {
+  string name = 2 [ json_name = "n" ];
+//  google.protobuf.Any value = 3 [ json_name = "v" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+}
+
+//CartesianLayout represents an (x,y,(z)) coordinate attached to a node.
+message CartesianLayout {
+  int64 nodeId = 1 [ json_name = "node" ];
+  double x = 2;
+  double y = 3;
+  double z = 4;
+}
