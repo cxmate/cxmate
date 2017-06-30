@@ -61,7 +61,7 @@ Configuration
 -------------
 On startup, cxMate will look for a `cxmate.json` file to load configuraiton from. cxMate will not start if it cannot load this file.
 
-```
+```json
 {
   "general": {
     "location": "0.0.0.0:80",
@@ -83,7 +83,7 @@ On startup, cxMate will look for a `cxmate.json` file to load configuraiton from
       {
         "key": "test_param",
         "default": "1.0",
-        "description: "A parameter may be any string encoded value. The default value is garunteed to reach the service."
+        "description": "A parameter may be any string encoded value. The default value is garunteed to reach the service."
       }
     ],
     "input": [
