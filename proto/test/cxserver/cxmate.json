@@ -21,7 +21,7 @@
       {
         "label": "Input",
         "description": "An input network to be echoed",
-        "aspects": ["nodes", "edges", "nodeAttributes", "edgeAttributes", "networkAttributes"]
+        "aspects": ["nodes", "edges", "edgeAttributes", "networkAttributes"]
       }
     ],
     "output": [

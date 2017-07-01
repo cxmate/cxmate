@@ -129,15 +129,14 @@ func (d *Decoder) DecodeAspect() error {
 	if err := d.parseDelim('[', "an opening brace for a list of "+id+" elements"); err != nil {
 		return err
 	}
+	logDebugln("Parsing aspect", id, "required:", shouldRead)
 	for d.more() {
 		if shouldRead {
-			logDebugln("decoding required aspect", id)
 			if err := d.parseElement(id); err != nil {
 				return err
 			}
 		} else {
 			if err := d.consumeElement(id); err != nil {
-				logDebugln("decoding unrequired aspect", id)
 				return err
 			}
 		}

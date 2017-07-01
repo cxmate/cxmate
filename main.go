@@ -69,6 +69,7 @@ func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadClose
 	done := make(chan bool)
 	go func() {
 		if err := m.decodeRequestBody(s, p, r); err != nil {
+			logDebug(err)
 			errChan <- err
 			close(done)
 		}
