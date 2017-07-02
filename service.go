@@ -117,7 +117,7 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 func (ss *ServiceStream) ReceiveMessage(r <-chan *Message) (*proto.NetworkElement, error) {
 	m, ok := <-r
 	if !ok {
-		return m.ele, io.EOF
+		return nil, io.EOF
 	}
 	if m.err != nil {
 		return nil, m.err

@@ -65,22 +65,25 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadCloser, w io.Writer) error {
-	errChan := make(chan error)
+	errChan := make(chan error, 1)
 	done := make(chan bool)
 	go func() {
 		if err := m.decodeRequestBody(s, p, r); err != nil {
 			logDebug(err)
 			errChan <- err
+			logDebug("error sent to channel")
 			close(done)
+		} else {
+			done <- true
 		}
-		done <- true
 	}()
 	go func() {
 		if err := m.encodeResponseBody(s, w); err != nil {
 			errChan <- err
 			close(done)
+		} else {
+			done <- true
 		}
-		done <- true
 	}()
 	if _, ok := <-done; !ok {
 		err := <-errChan
@@ -108,6 +111,7 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 	if err := dec.DecodeNetwork(); err != nil {
 		return err
 	}
+	close(send)
 	return nil
 }
 
@@ -115,13 +119,19 @@ func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
 	marshaler := &jsonpb.Marshaler{}
-	for ele, err := s.ReceiveMessage(receive); err != io.EOF; {
+	for {
+		ele, err := s.ReceiveMessage(receive)
+		if err == io.EOF {
+			break
+		}
 		if err != nil {
 			return err
 		}
 		marshaler.Marshal(w, ele)
+		io.WriteString(w, "\n")
 	}
 	return nil
+
 }
 
 func newMateMux(cxmate *Mate) *http.ServeMux {
