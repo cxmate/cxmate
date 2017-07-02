@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -54,29 +54,33 @@ type ServiceConfig struct {
 //EncoderConfig is a MOCK
 type EncoderConfig struct{}
 
-const configfile = "cxmate.json"
-
-//loadConfig loads a cxMate config file from the current directory
-func loadConfig() (*Config, error) {
-	file, err := ioutil.ReadFile(configfile)
-	if err != nil {
-		return nil, err
-	}
-	config := &Config{}
-	if err := json.Unmarshal(file, config); err != nil {
-		return nil, err
-	}
-	return config, nil
-
-}
-
-//PrintConfig prints the given configuration to standard output. This is useful for debugging.
-func (c *Config) PrintConfig() error {
-	fmt.Println("Currently loaded configuration:")
+//Print prints the config to standard output in JSON form.
+func (c *Config) Print() error {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "    ")
 	if err := enc.Encode(c); err != nil {
-		return errors.New("Error reporting configuration... " + err.Error())
+		return errors.New(fmt.Sprint("error reporting configuration:", err))
 	}
 	return nil
+}
+
+const confLocation = "cxmate.json"
+
+//loadConfig loads a cxmate.json config file from the current directory
+func loadConfig() (*Config, error) {
+	file, err := os.Open(confLocation)
+	if err != nil {
+		return nil, err
+	}
+	return loadFrom(file)
+}
+
+//loadFrom loads a cxMate config struct from a reader
+func loadFrom(r io.Reader) (*Config, error) {
+	c := &Config{}
+	dec := json.NewDecoder(r)
+	if err := dec.Decode(c); err != nil {
+		return nil, err
+	}
+	return c, nil
 }

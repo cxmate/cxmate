@@ -28,7 +28,7 @@ func NewServiceConn(address string) (*ServiceConn, error) {
 // Close tears down the ServiceConn connection, including all active streams
 func (sc *ServiceConn) Close() error {
 	logDebugln("closing connection to service")
-	return sc.Close()
+	return sc.conn.Close()
 }
 
 //Stream allows mocking of a concrete grpc stream client

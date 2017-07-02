@@ -28,7 +28,7 @@ func TestSendQueryStringParams(t *testing.T) {
 		close(alive)
 	}()
 	config := &Config{
-		Algorithm: AlgorithmConfig{
+		Service: ServiceConfig{
 			Parameters: []ParameterConfig{
 				ParameterConfig{
 					Key: "testkey",

@@ -4,8 +4,6 @@ import (
 	"io"
 	"strings"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 var sampleCXNetwork = `
@@ -259,7 +257,6 @@ func TestReadPostMetdata(t *testing.T) {
 
 func consumeMessages(messages <-chan *Message) {
 	for m := range messages {
-		spew.Dump(m)
 		close(m.errChan)
 	}
 }

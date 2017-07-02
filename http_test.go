@@ -9,15 +9,15 @@ import (
 
 func executeRequest(req *http.Request) *http.Response {
 	rr := httptest.NewRecorder()
-	newMateMux(&Mate{}).ServeHTTP(rr, req)
+	newMateMux(&Mate{Config: &Config{Service: ServiceConfig{Name: "test"}}}).ServeHTTP(rr, req)
 	return rr.Result()
 }
 
-func decodeResponse(req *http.Request) (Response, *http.Response) {
+func decodeResponse(req *http.Request) (HTTPResponse, *http.Response) {
 	response := executeRequest(req)
 	defer response.Body.Close()
 	dec := json.NewDecoder(response.Body)
-	var rb Response
+	var rb HTTPResponse
 	dec.Decode(&rb)
 	return rb, response
 }

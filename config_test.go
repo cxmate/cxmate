@@ -1,117 +1,96 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
 	"strings"
 	"testing"
 )
 
 var completeConfig = `
 {
-  "general": {
-    "location": "0.0.0.0:80",
-    "domain": "cxmate.ericsage.io",
-    "debug": false
-  },
-  "service": {
-    "location": "localhost:8080"
-  },
-  "algorithm": {
-    "name": "Echo",
-    "author": "Eric Sage",
-    "summary": "A test service that echos its input to its output.",
-	"keywords": ["bioinformatics", "networks", "algorithms"],
-    "license": "MIT",
-    "language": "Golang",
-    "parameters": [
-      {
-        "key": "test",
-        "default": "value",
-        "description": "A test parameter."
-      }
-    ],
-    "input": [
-      {
-        "label": "Input",
-        "description": "An input network to be echoed",
-        "aspects": ["node", "edge", "nodeAttribute", "edgeAttribute", "networkAttribute"],
-        "download": {
-          "endpoint": "http://ndexbio.org/v2/network",
-          "method": "GET",
-          "authorization": "BASIC LKJ544KL534J5KL"
-        }
-      }
-    ],
-    "output": [
-      {
-        "label": "Output",
-        "description": "An output network which is the same network as the input.",
-        "aspects": ["node", "edge", "nodeAttribute", "edgeAttribute", "networkAttribute"],
-        "upload": {
-          "endpoint": "http://ndexbio.org/v2/network",
-          "method": "POST",
-          "authorization": "BASIC LKJ544KL534J5KL"
-        }
-      }
-    ]
-  }
+	"general": {
+		"location": "0.0.0.0:80",
+		"domain": "test.domain.com",
+		"logger": {
+			"debug": true,
+			"file": "cxmate.log",
+			"format": "json"
+		}
+	},
+	"service": {
+		"location": "localhost:8080",
+		"name": "test",
+		"author": "John Doe",
+		"summary": "my service",
+		"keywords": ["networks"],
+		"license": "MIT",
+		"language": "Python",
+		"parameters": [
+			{
+				"key": "test_param",
+				"default": "1",
+				"description": "test param"
+			}
+		]
+	}
 }
 `
 
-func ensureConfigExists(t *testing.T) {
-	if _, err := os.Stat("./config.json"); os.IsNotExist(err) {
-		fmt.Println("Could not find config")
-		if _, err := os.Create("./config.json"); err != nil {
-			t.Errorf("Could not create test config file, error: %#v", err)
-		}
-	}
-}
-
-func backupConfig(t *testing.T) []byte {
-	backup, err := ioutil.ReadFile("./config.json")
+// TestLoadCompleteConfig verifies that all of the valid config fields have been set correctly.
+func TestLoadConfig(t *testing.T) {
+	r := strings.NewReader(completeConfig)
+	config, err := loadFrom(r)
 	if err != nil {
-		t.Errorf("Could not read config file into backup, error: %#v", err)
+		t.Fatal(err)
 	}
-	return backup
-}
-
-func restoreConfig(t *testing.T, backup []byte) {
-	if err := ioutil.WriteFile("./config.json", backup, 0644); err != nil {
-		t.Errorf("Could not restore config from backup, error: %#v", err)
+	if config.General.Location != "0.0.0.0:80" {
+		t.Error("config.General.Location not set")
 	}
-}
-
-func writeConfig(t *testing.T, config string) {
-	if err := ioutil.WriteFile("./config.json", []byte(config), 0644); err != nil {
-		t.Errorf("Could not write sample config, %#v", err)
+	if config.General.Domain != "test.domain.com" {
+		t.Error("config.General.Domain not set")
 	}
-}
-
-func TestReadConfig(t *testing.T) {
-	ensureConfigExists(t)
-	backup := backupConfig(t)
-	defer restoreConfig(t, backup)
-
-	t.Run("SetCompleteConfig", func(t *testing.T) {
-		writeConfig(t, completeConfig)
-		c, err := LoadConfig("./config.json")
-		if err != nil {
-			t.Errorf("Could not load config, error: %#v", err)
-		}
-		b, err := json.MarshalIndent(c, "", " ")
-		if err != nil {
-			t.Errorf("Could not marshal config to byte array: %#v", err)
-		}
-		if compress(string(b)) != compress(completeConfig) {
-			t.Errorf("Fields were not set in the complete config")
-		}
-	})
-
-}
-
-func compress(s string) string {
-	return strings.NewReplacer(" ", "", "\n", "", "\t", "").Replace(s)
+	if config.General.Logger.Debug != true {
+		t.Error("config.General.Logger.Debug not set")
+	}
+	if config.General.Logger.File != "cxmate.log" {
+		t.Error("config.General.Logger.File not set")
+	}
+	if config.General.Logger.Format != "json" {
+		t.Error("config.General.Format not set")
+	}
+	if config.Service.Location != "localhost:8080" {
+		t.Error("config.Service.Location not set")
+	}
+	if config.Service.Name != "test" {
+		t.Error("config.Service.Name not set")
+	}
+	if config.Service.Author != "John Doe" {
+		t.Error("config.Service.Author not set")
+	}
+	if config.Service.Summary != "my service" {
+		t.Error("config.Service.Summary not set")
+	}
+	if len(config.Service.Keywords) != 1 {
+		t.Fatal("config.Service.Keywords does not contain the correct amount of parameters")
+	}
+	if config.Service.Keywords[0] != "networks" {
+		t.Error("config.Service.Keywords not set")
+	}
+	if config.Service.License != "MIT" {
+		t.Error("config.Service.License not set")
+	}
+	if config.Service.Language != "Python" {
+		t.Error("config.Service.Language not set")
+	}
+	if len(config.Service.Parameters) != 1 {
+		t.Fatal("config.Service.Parameters does not contain the correct amount of parameters")
+	}
+	if config.Service.Parameters[0].Key != "test_param" {
+		t.Error("config.Service.Parameters[0].Key not set")
+	}
+	if config.Service.Parameters[0].Default != "1" {
+		t.Error("config.Service.Parameters[0].Default not set")
+	}
+	if config.Service.Parameters[0].Description != "test param" {
+		t.Error("config.Service.Parameters[0].Description not set")
+	}
 }
