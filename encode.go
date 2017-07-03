@@ -10,24 +10,6 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 )
 
-/*
-marshaler := &jsonpb.Marshaler{}
-	for {
-		ele, err := s.ReceiveMessage(receive)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		logDebugln("ASPECT NAME")
-		logDebugln(proto.GetAspectName(ele))
-		marshaler.Marshal(w, ele)
-		io.WriteString(w, "\n")
-	}
-	return nil
-*/
-
 // Encoder represents an encoder for a single CX network
 type Encoder struct {
 	w        io.Writer
@@ -67,7 +49,7 @@ func NewEncoder(w io.Writer, s <-chan *Message, c EncoderConfig) (*Encoder, erro
 	}, nil
 }
 
-// EncodeNetwork wriats out a network
+// EncodeNetwork writes out a network
 func (e *Encoder) EncodeNetwork() error {
 	defer e.emitRemainingBrackets()
 	logDebugln("Generating network", e.config.Label, "with aspects", e.config.Aspects)
