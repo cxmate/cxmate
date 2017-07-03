@@ -51,9 +51,6 @@ type ServiceConfig struct {
 	Output []EncoderConfig `json:"output"`
 }
 
-//EncoderConfig is a MOCK
-type EncoderConfig struct{}
-
 //Print prints the config to standard output in JSON form.
 func (c *Config) Print() error {
 	enc := json.NewEncoder(os.Stdout)

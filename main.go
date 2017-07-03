@@ -5,8 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-
-	"github.com/golang/protobuf/jsonpb"
 )
 
 //Error messages for http replies.
@@ -118,20 +116,14 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	marshaler := &jsonpb.Marshaler{}
-	for {
-		ele, err := s.ReceiveMessage(receive)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		marshaler.Marshal(w, ele)
-		io.WriteString(w, "\n")
+	enc, err := NewEncoder(w, receive, m.Config.Service.Output[0])
+	if err != nil {
+		return err
+	}
+	if err := enc.EncodeNetwork(); err != nil {
+		return err
 	}
 	return nil
-
 }
 
 func newMateMux(cxmate *Mate) *http.ServeMux {

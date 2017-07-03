@@ -114,7 +114,7 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 
 // ReceiveMessage blocks until it recieves an element from the service, returns the element or an error. error is set to io.EOF if the
 // channel is closed (indicating the service is finished sending (or disconnected erroneously))
-func (ss *ServiceStream) ReceiveMessage(r <-chan *Message) (*proto.NetworkElement, error) {
+func ReceiveMessage(r <-chan *Message) (*proto.NetworkElement, error) {
 	m, ok := <-r
 	if !ok {
 		return nil, io.EOF
