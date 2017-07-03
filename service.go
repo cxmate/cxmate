@@ -16,18 +16,18 @@ type ServiceConn struct {
 
 // NewServiceConn creates a persistent connection to the service at an address
 func NewServiceConn(address string) (*ServiceConn, error) {
-	logDebugln("dialing service...")
+	logDebugln("Dialing service...")
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("could not establish connection")
 	}
-	logDebugln("connection to service established")
+	logDebugln("Connection to service established")
 	return &ServiceConn{conn: conn}, nil
 }
 
 // Close tears down the ServiceConn connection, including all active streams
 func (sc *ServiceConn) Close() error {
-	logDebugln("closing connection to service")
+	logDebugln("Closing connection to service")
 	return sc.conn.Close()
 }
 
@@ -46,13 +46,13 @@ type ServiceStream struct {
 
 // NewServiceStream creates a client for communicating with a service
 func (sc *ServiceConn) NewServiceStream() (*ServiceStream, error) {
-	logDebugln("creating new service stream to process request")
+	logDebugln("Creating new service stream to process request")
 	c := proto.NewCxMateServiceClient(sc.conn)
 	stream, err := c.StreamNetworks(context.Background())
 	if err != nil {
 		return nil, errors.New("could not initiate StreamNetworks call to server")
 	}
-	logDebugln("service stream initialized")
+	logDebugln("Service stream initialized")
 	return &ServiceStream{stream}, nil
 }
 
@@ -68,7 +68,7 @@ type Message struct {
 // and returns when the channel is clsoed
 func (ss *ServiceStream) OpenSend(s <-chan *Message) {
 	go func() {
-		logDebugln("initiating read from the send message channel")
+		logDebugln("Initiating read from the send message channel")
 		for sm := range s {
 			err := ss.stream.Send(sm.ele)
 			if err != nil {
@@ -76,7 +76,7 @@ func (ss *ServiceStream) OpenSend(s <-chan *Message) {
 			}
 			close(sm.errChan)
 		}
-		logDebugln("closing the send message channel")
+		logDebugln("Closing the send message channel")
 		ss.stream.CloseSend()
 	}()
 }
@@ -96,7 +96,7 @@ func SendMessage(ele *proto.NetworkElement, s chan<- *Message) error {
 // when the service closes the stream (or disconnects erroneously)
 func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 	go func() {
-		logDebugln("initiating send to the receive message channel")
+		logDebugln("Initiating send to the receive message channel")
 		for {
 			ele, err := ss.stream.Recv()
 			if err == io.EOF {
@@ -107,7 +107,7 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 				err: err,
 			}
 		}
-		logDebugln("closing the receive message channel")
+		logDebugln("Closing the receive message channel")
 		close(r)
 	}()
 }

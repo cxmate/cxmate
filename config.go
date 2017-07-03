@@ -65,6 +65,7 @@ const confLocation = "cxmate.json"
 
 //loadConfig loads a cxmate.json config file from the current directory
 func loadConfig() (*Config, error) {
+	logDebug("Loading cxmate.json configuration file")
 	file, err := os.Open(confLocation)
 	if err != nil {
 		return nil, err

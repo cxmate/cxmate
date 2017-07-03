@@ -47,7 +47,7 @@ type DecoderConfig struct {
 
 //NewDecoder validates a Decoder config and returns a new decoder or an error
 func NewDecoder(r io.Reader, s chan<- *Message, c DecoderConfig) (*Decoder, error) {
-	logDebug("creating new decoder")
+	logDebug("Creating new decoder")
 	if c.Label == "" {
 		return nil, errors.New("invalid config, label missing")
 	}
@@ -63,7 +63,7 @@ func NewDecoder(r io.Reader, s chan<- *Message, c DecoderConfig) (*Decoder, erro
 
 //DecodeNumberVerification decodes the magic long number from a CX stream
 func (d *Decoder) DecodeNumberVerification() error {
-	logDebug("decoding number verification")
+	logDebug("Parsing number verification")
 	var aspect map[string][]NumberVerification
 	if err := d.parseValue(&aspect, "the CX NumberVerification aspect"); err != nil {
 		return err
@@ -83,7 +83,7 @@ func (d *Decoder) DecodeNumberVerification() error {
 
 //DecodeMetadata decodes a list of metdata structs from a CX stream
 func (d *Decoder) DecodeMetadata() error {
-	logDebugln("decoding metadata")
+	logDebugln("Parsing metadata")
 	var aspect map[string][]Metadata
 	if err := d.parseValue(&aspect, "the CX metadata aspect"); err != nil {
 		return err
@@ -117,7 +117,7 @@ func (d *Decoder) DecodeAspect() error {
 		return err
 	}
 	if id == "metaData" {
-		logDebugln("post-metadata encountered, returning EOF")
+		logDebugln("Post-metadata encountered, returning EOF")
 		return io.EOF
 	}
 	var shouldRead bool
@@ -152,7 +152,7 @@ func (d *Decoder) DecodeAspect() error {
 
 //DecodeNetwork decodes a single network
 func (d *Decoder) DecodeNetwork() error {
-	logDebug("decoding network", d.config.Label, "with required aspects", d.config.Aspects)
+	logDebug("Parsing network", d.config.Label, "with required aspects", d.config.Aspects)
 	if err := d.parseDelim('[', "an opening brace of a CX encoded network"); err != nil {
 		return err
 	}

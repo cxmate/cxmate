@@ -41,7 +41,7 @@ func NewMate() *Mate {
 }
 
 func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
-	logDebugln("request recieved")
+	logDebugln("Request recieved")
 	if req.Method != "POST" {
 		writeHTTPError(res, m.Config.Service.Name, methodNotAllowedMessage, http.StatusMethodNotAllowed)
 		return
@@ -69,7 +69,7 @@ func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadClose
 		if err := m.decodeRequestBody(s, p, r); err != nil {
 			logDebug(err)
 			errChan <- err
-			logDebug("error sent to channel")
+			logDebug("Error sent to channel")
 			close(done)
 		} else {
 			done <- true

@@ -50,7 +50,7 @@ func (r *HTTPResponse) toJSON(w io.Writer) {
 
 //writeHTTPError is a convience function for writing a single error message back to an http client.
 func writeHTTPError(res http.ResponseWriter, service string, message string, httpStatus int) {
-	logDebugln("writing http error into an http response writer")
+	logDebugln("Writing http error into an http response writer")
 	e := NewHTTPError(service, message, httpStatus)
 	r := NewHTTPResponse("", []*HTTPError{e})
 	res.WriteHeader(httpStatus)
@@ -59,7 +59,7 @@ func writeHTTPError(res http.ResponseWriter, service string, message string, htt
 
 //writeHTTPResponse is a convience function for writing a simple message back to an http client with status 200 OK.
 func writeHTTPResponse(res http.ResponseWriter, message string) {
-	logDebugln("writing http request into an http response writer")
+	logDebugln("Writing http request into an http response writer")
 	r := NewHTTPResponse(message, []*HTTPError{})
 	res.WriteHeader(http.StatusOK)
 	r.toJSON(res)
