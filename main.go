@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 //Error messages for http replies.
@@ -23,21 +22,23 @@ type Mate struct {
 }
 
 //NewMate loads configuration and connects to the backing service before returning a new instance of Mate
-func NewMate() *Mate {
+func NewMate() (*Mate, error) {
 	config, err := loadConfig()
 	if err != nil {
-		fmt.Println("Could not load configuration file, error:", err)
-		os.Exit(0)
+		return nil, fmt.Errorf("could not load configuration file, error: %v", err)
 	}
 	configureLogger(config.General.Logger)
+	if err = config.Service.Input.validate(); err != nil {
+		return nil, err
+	}
 	conn, err := NewServiceConn(config.Service.Location)
 	if err != nil {
-		logFatalln("Could not connect to the service,", err)
+		return nil, fmt.Errorf("could not connect to the service error: %v", err)
 	}
 	return &Mate{
 		Config: config,
 		Conn:   conn,
-	}
+	}, nil
 }
 
 func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
@@ -102,11 +103,7 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 	if err := m.processParameters(send, p); err != nil {
 		return err
 	}
-	dec, err := NewDecoder(r, send, m.Config.Service.Input[0])
-	if err != nil {
-		return err
-	}
-	if err := dec.DecodeNetwork(); err != nil {
+	if err := m.Config.Service.Input.parse(r, send); err != nil {
 		return err
 	}
 	close(send)
@@ -134,7 +131,10 @@ func newMateMux(cxmate *Mate) *http.ServeMux {
 
 func main() {
 	logDebug("cxmate starting")
-	cxmate := NewMate()
+	cxmate, err := NewMate()
+	if err != nil {
+		logFatalln(err)
+	}
 	mux := newMateMux(cxmate)
-	logFatal(http.ListenAndServe(cxmate.Config.General.Location, mux))
+	logFatalln(http.ListenAndServe(cxmate.Config.General.Location, mux))
 }

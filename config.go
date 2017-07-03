@@ -46,7 +46,7 @@ type ServiceConfig struct {
 	//Parameters is a list of key/value pair objects that should augment the way an algorithm behaves.
 	Parameters []ParameterConfig `json:"parameters"`
 	//Inputs is used to describe multiple networks as input to the algorithm.
-	Input []DecoderConfig `json:"input"`
+	Input ParserConfig `json:"input"`
 	//Outputs is used to describe multiple networks as output to the algorithm.
 	Output []EncoderConfig `json:"output"`
 }

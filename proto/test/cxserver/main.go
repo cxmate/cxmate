@@ -17,7 +17,7 @@ type cxMateServiceServer struct{}
 func (s *cxMateServiceServer) StreamNetworks(stream proto.CxMateService_StreamNetworksServer) error {
 	t0 := time.Now()
 	for {
-		_, err := stream.Recv()
+		in, err := stream.Recv()
 		if err == io.EOF {
 			log.Println("EOF encountered in err... ending call....")
 			break
@@ -26,12 +26,10 @@ func (s *cxMateServiceServer) StreamNetworks(stream proto.CxMateService_StreamNe
 			log.Printf("Recv error: %#v", err)
 			return err
 		}
-		/*
-			err = stream.Send(in)
-			if err != nil {
-				return err
-			}
-		*/
+		err = stream.Send(in)
+		if err != nil {
+			return err
+		}
 	}
 	t1 := time.Now()
 	fmt.Printf("The call took %v to run.\n", t1.Sub(t0))

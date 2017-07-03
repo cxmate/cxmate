@@ -71,10 +71,10 @@ func (e *Encoder) EncodeNetwork() error {
 // EncodeNumberVerfication writes out the standard number verification stanza
 func (e *Encoder) emitNumberVerfication() error {
 	logDebugln("Generating number verification")
-	l := NumberVerification{
+	l := LongNumber{
 		LongNumber: supportedLongNumber,
 	}
-	nv := map[string]NumberVerification{"numberVerification": l}
+	nv := map[string]LongNumber{"numberVerification": l}
 	s, err := e.encode(nv)
 	if err != nil {
 		return err
