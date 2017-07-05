@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/ericsage/cxmate/proto"
 )
 
@@ -29,7 +28,7 @@ type Metadata struct {
 	Checksum         string      `json:"checksum,omitempty"`
 }
 
-// ParserConfig contains a description of many CX networks.
+// ParserConfig contains a description of each network the service will input.
 type ParserConfig []NetworkDescription
 
 // NetworkDescription describes a single CX network.
@@ -105,7 +104,7 @@ func (p *Parser) parseNetwork(label string, aspects []string) error {
 		return err
 	}
 	for p.more() {
-		if err := p.parseAspect(aspects); err != nil {
+		if err := p.parseAspect(label, aspects); err != nil {
 			return err
 		}
 	}
@@ -162,7 +161,7 @@ func (p *Parser) parseMetadata(aspects []string) error {
 }
 
 // parseAspect parses an aspect and determines if its aspect elements are required, it returns io.EOF if a post-metadata aspect is encountered.
-func (p *Parser) parseAspect(aspects []string) error {
+func (p *Parser) parseAspect(label string, aspects []string) error {
 	if err := p.parseDelim('{', "an opening bracket of an aspect fragment"); err != nil {
 		return err
 	}
@@ -186,7 +185,7 @@ func (p *Parser) parseAspect(aspects []string) error {
 	logDebugln("Parsing aspect", id, "required:", shouldRead)
 	for p.more() {
 		if shouldRead {
-			if err := p.parseElement(id); err != nil {
+			if err := p.parseElement(label, id); err != nil {
 				return err
 			}
 		} else {
@@ -250,12 +249,11 @@ func (p *Parser) parseValue(value interface{}, description string) error {
 }
 
 // parseElement tries to decode a CX aspect element into a protobuf and send it to the service.
-func (p *Parser) parseElement(id string) error {
-	ele, err := proto.NetworkElementFromJSON(id, p.dec)
+func (p *Parser) parseElement(networkID string, aspectID string) error {
+	ele, err := proto.NetworkElementFromJSON(networkID, aspectID, p.dec)
 	if err != nil {
-		return errors.New("Error parsing aspect element in required aspect " + id + ", error: " + err.Error())
+		return errors.New("Error parsing aspect element in required aspect " + aspectID + ", error: " + err.Error())
 	}
-	spew.Dump(ele)
 	return SendMessage(ele, p.sendChan)
 }
 

@@ -16,14 +16,13 @@ service cxMateService {
 
 //********** INPUT/OUTPUT MESSAGES **********//
 
-//NetworkElement is a wrapper that constains a networkId, which is used to allow
-//StreamNetworks to send and receive more than one network, networks are distinguished by there id.
-//NetworkElement is also a wrapper for exactly one element. Some elements do not exist in CX,
-//like Parameter and Error, which are special elements used to communicate out of band information
+//NetworkElement is a wrapper that constains a label, which is used to allow
+//StreamNetworks to send and receive more than one network.NetworkElement is also a wrapper for exactly one element.
+// Some elements do not exist in CX, like Parameter and Error, which are special elements used to communicate out of band information
 //between cxMate and a service. The other elements corrospond to an aspect in a CX document. These
 //elements should be used to build networks, and turn networks back into elements cxMate can understand.
 message NetworkElement {
-  int64 networkId = 1;
+  string label = 1;
   oneof element {
     Parameter parameter = 2;
     Error error = 3;

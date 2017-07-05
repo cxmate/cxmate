@@ -48,7 +48,7 @@ type ServiceConfig struct {
 	//Inputs is used to describe multiple networks as input to the algorithm.
 	Input ParserConfig `json:"input"`
 	//Outputs is used to describe multiple networks as output to the algorithm.
-	Output []EncoderConfig `json:"output"`
+	Output GeneratorConfig `json:"output"`
 }
 
 //Print prints the config to standard output in JSON form.

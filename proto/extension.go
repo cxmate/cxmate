@@ -9,8 +9,8 @@ import (
 )
 
 // NetworkElementFromJSON is an extension to handle decoding JSON into the oneOf in NetworkElement
-func NetworkElementFromJSON(eleType string, dec *json.Decoder) (*NetworkElement, error) {
-	n := &NetworkElement{}
+func NetworkElementFromJSON(label string, eleType string, dec *json.Decoder) (*NetworkElement, error) {
+	n := &NetworkElement{Label: label}
 	var err error
 	switch eleType {
 	case "nodes":

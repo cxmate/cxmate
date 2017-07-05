@@ -31,6 +31,9 @@ func NewMate() (*Mate, error) {
 	if err = config.Service.Input.validate(); err != nil {
 		return nil, err
 	}
+	if err = config.Service.Output.validate(); err != nil {
+		return nil, err
+	}
 	conn, err := NewServiceConn(config.Service.Location)
 	if err != nil {
 		return nil, fmt.Errorf("could not connect to the service error: %v", err)
@@ -65,35 +68,32 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 
 func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadCloser, w io.Writer) error {
 	errChan := make(chan error, 1)
-	done := make(chan bool)
 	go func() {
 		if err := m.decodeRequestBody(s, p, r); err != nil {
-			logDebug(err)
+			logDebug("Processing the request returned an error:", err)
 			errChan <- err
-			logDebug("Error sent to channel")
-			close(done)
 		} else {
-			done <- true
+			errChan <- nil
 		}
 	}()
 	go func() {
 		if err := m.encodeResponseBody(s, w); err != nil {
+			logDebug("Generating the response returned an error:", err)
 			errChan <- err
-			close(done)
 		} else {
-			done <- true
+			errChan <- nil
 		}
 	}()
-	if _, ok := <-done; !ok {
-		err := <-errChan
-		close(errChan)
+	if err := <-errChan; err != nil {
+		logDebug("First routine returned an error")
 		return err
 	}
-	if _, ok := <-done; !ok {
-		err := <-errChan
-		close(errChan)
+	logDebug("First routine finished")
+	if err := <-errChan; err != nil {
+		logDebug("Second routine returned an error")
 		return err
 	}
+	logDebug("Second routine finished")
 	return nil
 }
 
@@ -113,11 +113,7 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	enc, err := NewEncoder(w, receive, m.Config.Service.Output[0])
-	if err != nil {
-		return err
-	}
-	if err := enc.EncodeNetwork(); err != nil {
+	if err := m.Config.Service.Output.generate(w, receive); err != nil {
 		return err
 	}
 	return nil

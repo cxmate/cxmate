@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/ericsage/cxmate/proto"
 	"google.golang.org/grpc"
 )
@@ -99,6 +100,9 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 		logDebugln("Initiating send to the receive message channel")
 		for {
 			ele, err := ss.stream.Recv()
+			logDebug("element from service")
+			spew.Dump(ele)
+			spew.Dump(err)
 			if err == io.EOF {
 				break
 			}
