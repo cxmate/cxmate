@@ -69,7 +69,7 @@ func (g *Generator) stream(networks []NetworkDescription) error {
 			}
 		}
 		if err := g.network(n.Label, n.Aspects); err != nil {
-			return err
+			return fmt.Errorf("parse error for %s at position %d: %v", n.Label, i, err)
 		}
 	}
 	if err := g.closeBrackets("]"); err != nil {
@@ -128,7 +128,7 @@ func (g *Generator) numberVerification(network string) error {
 
 // preMetadata generates the metadata aspect that goes before any user defined aspects. preMetadata takes a list of aspect names, which is uses to populate the name field for each aspect metadata element (the only required field in preMetadata).
 func (g *Generator) preMetadata(network string, aspects []string) error {
-	logDebugln("Generating preMetadata in ", network)
+	logDebugln("Generating preMetadata in", network)
 	md := []Metadata{}
 	for _, a := range aspects {
 		md = append(md, Metadata{
