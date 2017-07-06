@@ -43,10 +43,15 @@ type NetworkDescription struct {
 
 // validate performs validation on the ParserConfig.
 func (c ParserConfig) validate() error {
+	used := map[string]bool{}
 	for i, n := range c {
 		if n.Label == "" {
 			return fmt.Errorf("invalid config for input network  at position %d: label missing", i)
 		}
+		if _, exists := used[n.Label]; exists {
+			return fmt.Errorf("invalid config: output position: %d error: duplicate label found: %s", i, n.Label)
+		}
+		used[n.Label] = true
 		if len(n.Aspects) == 0 {
 			return fmt.Errorf("invalid config for input network %s at position %d: aspect list must not be empty", n.Label, i)
 		}

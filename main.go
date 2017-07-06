@@ -67,33 +67,14 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadCloser, w io.Writer) error {
-	errChan := make(chan error, 1)
-	go func() {
-		if err := m.decodeRequestBody(s, p, r); err != nil {
-			logDebug("Processing the request returned an error:", err)
-			errChan <- err
-		} else {
-			errChan <- nil
-		}
-	}()
-	go func() {
-		if err := m.encodeResponseBody(s, w); err != nil {
-			logDebug("Generating the response returned an error:", err)
-			errChan <- err
-		} else {
-			errChan <- nil
-		}
-	}()
-	if err := <-errChan; err != nil {
-		logDebug("First routine returned an error")
+	if err := m.decodeRequestBody(s, p, r); err != nil {
+		logDebug("Processing the request returned an error:", err)
 		return err
 	}
-	logDebug("First routine finished")
-	if err := <-errChan; err != nil {
-		logDebug("Second routine returned an error")
+	if err := m.encodeResponseBody(s, w); err != nil {
+		logDebug("Generating the response returned an error:", err)
 		return err
 	}
-	logDebug("Second routine finished")
 	return nil
 }
 
@@ -113,7 +94,7 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	if err := m.Config.Service.Output.generate(w, receive); err != nil {
+	if err := m.Config.Service.Output.run(w, receive); err != nil {
 		return err
 	}
 	return nil
