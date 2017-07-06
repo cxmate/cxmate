@@ -4,6 +4,7 @@ import (
 	"io"
 	"net"
 	"testing"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -12,7 +13,7 @@ import (
 
 // TestNewServiceConn checks that a connection to a real grpc server can be established and torn down correctly.
 func TestNewServiceConn(t *testing.T) {
-	go runMockServer(t, "0.0.0.0:8080")
+	time.Sleep(time.Millisecond)
 	conn, err := NewServiceConn("0.0.0.0:8080")
 	if err != nil {
 		t.Fatal(err)
