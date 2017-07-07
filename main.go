@@ -94,7 +94,7 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	if err := m.Config.Service.Output.run(w, receive); err != nil {
+	if err := m.Config.Service.Output.generate(w, receive); err != nil {
 		return err
 	}
 	return nil

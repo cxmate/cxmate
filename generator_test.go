@@ -694,7 +694,7 @@ func TestRun(t *testing.T) {
 	}
 	genConf := GeneratorConfig(conf)
 	buf := bytes.NewBufferString("")
-	if err := genConf.run(buf, s); err != nil {
+	if err := genConf.generate(buf, s); err != nil {
 		t.Error(err)
 	}
 	expected := `[[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`

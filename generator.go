@@ -38,7 +38,7 @@ type Generator struct {
 }
 
 // run initializes and runs a CX generator.
-func (c GeneratorConfig) run(w io.Writer, s <-chan *Message) error {
+func (c GeneratorConfig) generate(w io.Writer, s <-chan *Message) error {
 	logDebugln("Generator initializing")
 	stream, err := newElementStream(s)
 	if err != nil {
