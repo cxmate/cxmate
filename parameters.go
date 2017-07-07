@@ -1,70 +1,144 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/ericsage/cxmate/proto"
 )
 
-//ParameterConfig configures an query string key that will be accepted as a parameter to an algorithm.
-type ParameterConfig struct {
-	//Key is the name of the parameter, which will be used to set and retrieve tha value of the parameter.
-	Key string `json:"key"`
-	//Default will be the value of the parameter if a user does not explicity set it.
-	Default string `json:"default"`
-	//Description gives a short description of the prameter, such as which its affect is on the algorithm.
-	Description string `json:"description"`
+// ParameterConfig contains a series of Parameter definitions that cxMate will use to convert
+// query string parameters into parameter messages that the service will consume. All parameters
+// define a default value that will be sent to the service if the parameter does not appear in the
+// query string. If a query string contains the same key twice that corrosponds to a parameter, multiple
+// messages with the same parameter name will be sent with each of the provided values.
+type ParameterConfig []Parameter
+
+// validate validates the ParameterConfig by calling validate on each provided Parameter definition.
+func (params ParameterConfig) validate() error {
+	for _, p := range params {
+		if err := p.validate(); err != nil {
+			return err
+		}
+	}
+	return err
 }
 
-// processParameters uses a parameter config to send Parameter NetworkElements to the service,
-// looking for values in the query string parameters received by cxMate, or sending a default value
-// supplied by the config
-func (m *Mate) processParameters(send chan *Message, params map[string][]string) error {
-	logDebugln("processing query string parameters")
-	requestedParams := m.Config.Service.Parameters
-	if requestedParams != nil {
-		for _, param := range requestedParams {
-			if values, ok := params[param.Key]; ok {
-				for _, value := range values {
-					logDebugln("Sending query string value", value, "for key", param.Key)
-					pm := newParameterElement(param.Key, value)
-					if err := sendParameter(send, pm); err != nil {
-						return err
-					}
-				}
-			} else {
-				logDebugln("Sending default value", param.Default, "for key", param.Key)
-				pm := newParameterElement(param.Key, param.Default)
-				if err := sendParameter(send, pm); err != nil {
+// send merges the query string parameters into the ParameterConfig, sending either the values
+// in the query string or the provided default value to the service for each parameter.
+func (params ParameterConfig) send(send chan *Message, query map[string][]string) error {
+	for _, p := range params {
+		if values, ok := query[p.Name]; ok {
+			for _, value := range values {
+				if err := p.send(value); err != nil {
 					return err
 				}
+			}
+		} else {
+			if err := p.send(p.Default); err != nil {
+				return err
 			}
 		}
 	}
 	return nil
 }
 
-// sendParameter sneds a Parameter NetworkElement to the service, and waits for an error
-func sendParameter(send chan *Message, parameter *proto.NetworkElement) error {
+// Parameter describes a parameter message that can be sent to the service. The type describes
+// the JSON representation of the Parameter, while the format describes a more detailed representation
+// for the service such as an unsigned integer, password, or complex object. The description will be used
+// for the service specification.
+type Parameter struct {
+	Name        string `json:"key"`
+	Default     string `json:"default"`
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	Format      string `json:"format"`
+}
+
+// validate determines if a Parameter is valid by checking if:
+// - The name field is not empty
+// - The Default field is not empty
+// - Description is not empty
+// - Type is one of string, integer, boolean, number or is empty
+// - The Default value must be castable to the provided type in Type
+func (p Parameter) validate() error {
+	if p.Name == "" {
+		return fmt.Errorf("name is a required field")
+	}
+	if p.Default == "" {
+		return fmt.Errorf("default is a required field")
+	}
+	if p.Description == "" {
+		return fmt.Errorf("description is a required field")
+	}
+	if p.Type != "" {
+		ok := false
+		accepted := []string{"integer", "number", "boolean", "string"}
+		for _, t := range accepted {
+			if p.Type == t {
+				ok = true
+				break
+			}
+		}
+		if !ok {
+			return fmt.Errorf("expected type to be one of %v found %s", accepted, p.Type)
+		}
+	}
+	if _, ok := p.convert(p.Default); !ok {
+		return fmt.Errorf("default value must be convertable to specified type or string if no type is provided")
+	}
+	return nil
+}
+
+// send builds a message to send to the service from the parameter, using value as the parameter value
+// that will be converted to the parameter type before being sent. send will block until the message has
+// been received and the error value from the service has been returned.
+func (p Parameter) send(send chan *Message, value string) error {
+	param, err := p.convert(value)
+	if err != nil {
+		return err
+	}
 	errChan := make(chan error)
 	message := &Message{
-		ele:     parameter,
+		ele: &proto.NetworkElement{
+			Element: &proto.NetworkElement_Parameter{
+				Parameter: param,
+			},
+		},
 		errChan: errChan,
 	}
 	send <- message
-	err, ok := <-errChan
-	if ok {
-		return nil
-	}
-	return err
+	return <-errChan
 }
 
-// newParameterElement creates and returns a pointer to new protobuf Parameter NetworkElement
-func newParameterElement(key string, value string) *proto.NetworkElement {
-	return &proto.NetworkElement{
-		Element: &proto.NetworkElement_Parameter{
-			Parameter: &proto.Parameter{
-				Name:  key,
-				Value: value,
-			},
-		},
+// convert wraps the parameter value in the type specified by the Parameter definition. If no type
+// was supplied, the val will be interpreted as a string.
+func (p *Parameter) convert(val string) (*proto.Parameter, error) {
+	pp := &proto.Parameter{Name: p.Name, Format: p.Format}
+	switch p.Type {
+	case "number":
+		v, ok := val.(float64)
+		if !ok {
+			break
+		}
+		pp.Value = &proto.Parameter_NumberValue{Number: v}
+		return pp, nil
+	case "boolean":
+		v, ok := val.(bool)
+		if !ok {
+			break
+		}
+		pp.Value = &proto.Parameter_BooleanValue{Boolean: v}
+		return pp, nil
+	case "integer":
+		v, ok := val.(int64)
+		if !ok {
+			break
+		}
+		pp.Value = &proto.Parameter_IntegerValue{Integer: v}
+		return pp, nil
+	default:
+		pp.Value = &proto.Parameter_StringValue{String_: val}
+		return pp, nil
 	}
+	return nil, fmt.Errors("cannot convert parameter %s with value %s to type %s", p.Name, val, p.Type)
 }

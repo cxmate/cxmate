@@ -45,7 +45,13 @@ message NetworkElement {
 //to a service for small tweaks to the way a service runs.
 message Parameter {
   string name = 1;
-  string value = 2;
+  string format = 2;
+  oneof value {
+    string stringValue = 3;
+    bool booleanValue = 4;
+    int64 integerValue = 5;
+    double numberValue = 6;
+  }
 }
 
 //Error represents an error from either cxMate or the service. Errors sent
