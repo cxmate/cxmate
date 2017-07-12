@@ -25,6 +25,9 @@ type ParserConfig []NetworkDescription
 // validate performs validation on the ParserConfig.
 func (c ParserConfig) validate() error {
 	used := map[string]bool{}
+	if len(c) == 0 {
+		return errors.New("must have at least one input network")
+	}
 	for i, n := range c {
 		if n.Label == "" {
 			return fmt.Errorf("invalid config for input network  at position %d: label missing", i)
@@ -48,12 +51,18 @@ type Parser struct {
 }
 
 // parse uses a parserConfig as a guide for reading a CX stream from a reader, and sends any required aspect elements to the message stream.
-func (c ParserConfig) parse(r io.Reader, s chan<- *Message) error {
+func (c ParserConfig) parse(r io.Reader, s chan<- *Message, singleton bool) error {
 	p := &Parser{
 		dec:      json.NewDecoder(r),
 		sendChan: s,
 	}
-	if err := p.stream(c); err != nil {
+	var err error
+	if singleton {
+		err = p.network(c[0].Label, c[0].Aspects)
+	} else {
+		err = p.stream(c)
+	}
+	if err != nil {
 		return err
 	}
 	return nil
@@ -66,7 +75,7 @@ func (p *Parser) stream(networks []NetworkDescription) error {
 	}
 	for i, n := range networks {
 		if err := p.network(n.Label, n.Aspects); err != nil {
-			return fmt.Errorf("parse error for %s at position %d: %v", n.Label, i, err)
+			return fmt.Errorf("error parsing %s at position %d: %v", n.Label, i, err)
 		}
 	}
 	if err := p.bracket(']', "a closing brace of a CX stream"); err != nil {
@@ -213,31 +222,29 @@ func (p *Parser) more() bool {
 
 // bracket parses a token tok match against a provided bracket rune.
 func (p *Parser) bracket(expects rune, description string) error {
-	errMessage := "Expected " + description + ", error:"
 	token, err := p.dec.Token()
 	if err != nil {
-		return fmt.Errorf("%s %v", errMessage, err)
+		return fmt.Errorf("Could not fetch token %s error: %v", description, err)
 	}
 	delim, ok := token.(json.Delim)
 	if !ok {
-		return fmt.Errorf("%s did not find bracket, found: %q", errMessage, token)
+		return fmt.Errorf("expected %s but found non-delimeter: %v", description, token)
 	}
 	if rune(delim) != expects {
-		return fmt.Errorf("expected bracket %s found bracket: %q", errMessage, delim)
+		return fmt.Errorf("expected bracket %q, %s, found bracket: %q", expects, description, rune(delim))
 	}
 	return nil
 }
 
 // key parses an object field token.
 func (p *Parser) key(description string) (string, error) {
-	errMessage := "Expected " + description + ", error: "
 	token, err := p.dec.Token()
 	if err != nil {
-		return "", fmt.Errorf("%s %v", errMessage, err)
+		return "", fmt.Errorf("Could not fetch token %s error: %v", description, err)
 	}
 	name, ok := token.(string)
 	if !ok {
-		return "", fmt.Errorf("%s did not find key", errMessage)
+		return "", fmt.Errorf("expected %s but found non-field key: %v", description, token)
 	}
 	return name, nil
 }
@@ -246,7 +253,7 @@ func (p *Parser) key(description string) (string, error) {
 func (p *Parser) value(value interface{}, description string) error {
 	err := p.dec.Decode(value)
 	if err != nil {
-		return fmt.Errorf("Expected %s but could not decode value, error: %v", description, err)
+		return fmt.Errorf("expected %s but could not decode value, error: %v", description, err)
 	}
 	return nil
 }

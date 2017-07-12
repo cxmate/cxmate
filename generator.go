@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 
@@ -14,9 +15,12 @@ type GeneratorConfig []NetworkDescription
 // validate performs validation on the GeneratorConfig.
 func (c GeneratorConfig) validate() error {
 	used := map[string]bool{}
+	if len(c) == 0 {
+		return errors.New("must have at least one output network")
+	}
 	for i, n := range c {
 		if n.Label == "" {
-			return fmt.Errorf("invalid config: output position: %d error: label missing", i)
+			return fmt.Errorf("invalid input output position: %d error: label missing", i)
 		}
 		if _, exists := used[n.Label]; exists {
 			return fmt.Errorf("invalid config: output position: %d error: duplicate label found: %s", i, n.Label)
@@ -38,7 +42,7 @@ type Generator struct {
 }
 
 // run initializes and runs a CX generator.
-func (c GeneratorConfig) generate(w io.Writer, s <-chan *Message) error {
+func (c GeneratorConfig) generate(w io.Writer, s <-chan *Message, singleton bool) error {
 	logDebugln("Generator initializing")
 	stream, err := newElementStream(s)
 	if err != nil {
@@ -50,7 +54,12 @@ func (c GeneratorConfig) generate(w io.Writer, s <-chan *Message) error {
 		brackets: newBracketStack(),
 	}
 	defer g.closeRemainingBrackets()
-	if err := g.stream(c); err != nil {
+	if singleton {
+		err = g.network(c[0].Label, c[0].Aspects)
+	} else {
+		err = g.stream(c)
+	}
+	if err != nil {
 		return err
 	}
 	return nil
@@ -69,7 +78,7 @@ func (g *Generator) stream(networks []NetworkDescription) error {
 			}
 		}
 		if err := g.network(n.Label, n.Aspects); err != nil {
-			return fmt.Errorf("parse error for %s at position %d: %v", n.Label, i, err)
+			return fmt.Errorf("error while generating %s at position %d: %v", n.Label, i, err)
 		}
 	}
 	if err := g.closeBrackets("]"); err != nil {

@@ -26,7 +26,7 @@ func (s *cxMateServiceServer) StreamNetworks(stream proto.CxMateService_StreamNe
 			log.Printf("Recv error: %#v", err)
 			return err
 		}
-		if _, ok := in.GetElement().(proto.NetworkElement_Parameter); !ok {
+		if _, ok := in.GetElement().(*proto.NetworkElement_Parameter); !ok {
 			err = stream.Send(in)
 			if err != nil {
 				return err

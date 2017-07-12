@@ -33,6 +33,13 @@ func NewHTTPError(service string, message string, status int) *HTTPError {
 	}
 }
 
+//toJSON writes an error to a provided writer as JSON
+func (e *HTTPError) toJSON(w io.Writer) {
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "   ")
+	enc.Encode(e)
+}
+
 //NewHTTPResponse create a New Response for transmitting back to the client.
 func NewHTTPResponse(data interface{}, errors []*HTTPError) *HTTPResponse {
 	return &HTTPResponse{
@@ -41,7 +48,7 @@ func NewHTTPResponse(data interface{}, errors []*HTTPError) *HTTPResponse {
 	}
 }
 
-//Encode writes a response to a provided writer as JSON, usually the writter is a http.ResponseWriter.
+//toJSON writes a response to a provided writer as JSON
 func (r *HTTPResponse) toJSON(w io.Writer) {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")

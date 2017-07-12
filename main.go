@@ -21,11 +21,14 @@ func NewMate() (*Mate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("loading configuration failed: %v", err)
 	}
+	if err = config.General.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
+	}
 	if err = config.Service.Input.validate(); err != nil {
-		return nil, fmt.Errorf("input validation error, err")
+		return nil, fmt.Errorf("config validation error: %v", err)
 	}
 	if err = config.Service.Output.validate(); err != nil {
-		return nil, fmt.Errorf("output validation error:", err)
+		return nil, fmt.Errorf("config validation error: %v", err)
 	}
 	conn, err := NewServiceConn(config.Service.Location)
 	if err != nil {
@@ -69,23 +72,20 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 		m.Logger.Errorln("Could not create service stream error:", err)
 		return
 	}
-	err = m.processCX(stream, req.URL.Query(), req.Body, res)
-	if err != nil {
+	if err := m.parseCX(stream, req.URL.Query(), req.Body); err != nil {
+		m.Logger.Errorln("Parser error:", err)
 		writeHTTPError(res, m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadCloser, w io.Writer) error {
-	if err := m.parseCX(s, p, r); err != nil {
-		m.Logger.Errorln("Parser error:", err)
-		return err
-	}
-	if err := m.generateCX(s, w); err != nil {
+	io.WriteString(res, `{"data":`)
+	if err := m.generateCX(stream, res); err != nil {
 		m.Logger.Errorln("Generator error:", err)
-		return err
+		io.WriteString(res, `, "errors":[`)
+		writeHTTPError(res, m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
+		io.WriteString(res, `]}`)
+	} else {
+		io.WriteString(res, `, "errors":[]}`)
 	}
-	return nil
 }
 
 func (m *Mate) parseCX(s *ServiceStream, p map[string][]string, r io.ReadCloser) error {
@@ -95,7 +95,7 @@ func (m *Mate) parseCX(s *ServiceStream, p map[string][]string, r io.ReadCloser)
 	if err := m.Config.Service.Parameters.send(send, p); err != nil {
 		return err
 	}
-	if err := m.Config.Service.Input.parse(r, send); err != nil {
+	if err := m.Config.Service.Input.parse(r, send, m.Config.Service.Singleton); err != nil {
 		return err
 	}
 	close(send)
@@ -106,7 +106,7 @@ func (m *Mate) generateCX(s *ServiceStream, w io.Writer) error {
 	m.Logger.Debugln("Generating CX")
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	if err := m.Config.Service.Output.generate(w, receive); err != nil {
+	if err := m.Config.Service.Output.generate(w, receive, m.Config.Service.Singleton); err != nil {
 		return err
 	}
 	return nil

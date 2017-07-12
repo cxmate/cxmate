@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -43,11 +44,22 @@ func (c LogConfig) NewLogger(service string, version string) (*Logger, error) {
 	}
 	logger := &Logger{
 		log: l.WithFields(logrus.Fields{
+			"id":      randID(10),
 			"service": service,
 			"version": version,
 		}),
 	}
 	return logger, nil
+}
+
+func randID(n int) string {
+	b := make([]rune, n)
+
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
 //AddField reates a new logger with a new field added to entries.

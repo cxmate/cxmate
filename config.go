@@ -27,6 +27,13 @@ type GeneralConfig struct {
 	Logger LogConfig `json:"logger"`
 }
 
+func (c GeneralConfig) validate() error {
+	if c.Location == "" {
+		return errors.New("general config missing required location field")
+	}
+	return nil
+}
+
 //ServiceConfig configures how the proxy will connect to the external Service.
 type ServiceConfig struct {
 	//Location is a URL:PORT that the Proxy expects the service to be listening on.
@@ -45,12 +52,27 @@ type ServiceConfig struct {
 	License string `json:"license"`
 	//Language should be set to the name of the programming langugage the algorithm is written in.
 	Language string `json:"language"`
+	//Singleton will cause input and output configs of size 1 to be treated as scalars
+	Singleton bool `json:"singleton"`
 	//Parameters is a list of key/value pair objects that should augment the way an algorithm behaves.
 	Parameters ParameterConfig `json:"parameters"`
 	//Inputs is used to describe multiple networks as input to the algorithm.
 	Input ParserConfig `json:"input"`
 	//Outputs is used to describe multiple networks as output to the algorithm.
 	Output GeneratorConfig `json:"output"`
+}
+
+func (c ServiceConfig) validate() error {
+	if c.Location == "" {
+		return errors.New("service config missing required location field")
+	}
+	if c.Name == "" {
+		return errors.New("service config missing required name field")
+	}
+	if c.Version == "" {
+		return errors.New("service config missing required version field")
+	}
+	return nil
 }
 
 //Print prints the config to standard output in JSON form.

@@ -2,14 +2,30 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 )
 
 func executeRequest(req *http.Request) *http.Response {
+
 	rr := httptest.NewRecorder()
-	newMateMux(&Mate{Config: &Config{Service: ServiceConfig{Name: "test"}}}).ServeHTTP(rr, req)
+	logger := &logrus.Logger{Out: ioutil.Discard}
+	entry := logrus.NewEntry(logger)
+	m := &Mate{
+		Config: &Config{
+			Service: ServiceConfig{
+				Name: "test",
+			},
+		},
+		Logger: &Logger{log: entry},
+	}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", m.handleRoot)
+	mux.ServeHTTP(rr, req)
 	return rr.Result()
 }
 
