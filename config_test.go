@@ -84,7 +84,7 @@ func TestLoadConfig(t *testing.T) {
 	if len(config.Service.Parameters) != 1 {
 		t.Fatal("config.Service.Parameters does not contain the correct amount of parameters")
 	}
-	if config.Service.Parameters[0].Key != "test_param" {
+	if config.Service.Parameters[0].Name != "test_param" {
 		t.Error("config.Service.Parameters[0].Key not set")
 	}
 	if config.Service.Parameters[0].Default != "1" {

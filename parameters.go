@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/ericsage/cxmate/proto"
 )
@@ -20,7 +21,7 @@ func (params ParameterConfig) validate() error {
 			return err
 		}
 	}
-	return err
+	return nil
 }
 
 // send merges the query string parameters into the ParameterConfig, sending either the values
@@ -29,12 +30,12 @@ func (params ParameterConfig) send(send chan *Message, query map[string][]string
 	for _, p := range params {
 		if values, ok := query[p.Name]; ok {
 			for _, value := range values {
-				if err := p.send(value); err != nil {
+				if err := p.send(send, value); err != nil {
 					return err
 				}
 			}
 		} else {
-			if err := p.send(p.Default); err != nil {
+			if err := p.send(send, p.Default); err != nil {
 				return err
 			}
 		}
@@ -83,8 +84,8 @@ func (p Parameter) validate() error {
 			return fmt.Errorf("expected type to be one of %v found %s", accepted, p.Type)
 		}
 	}
-	if _, ok := p.convert(p.Default); !ok {
-		return fmt.Errorf("default value must be convertable to specified type or string if no type is provided")
+	if _, err := p.convert(p.Default); err != nil {
+		return fmt.Errorf("default value must be convertable to specified type or string if no type is provided error: %v", err)
 	}
 	return nil
 }
@@ -116,29 +117,29 @@ func (p *Parameter) convert(val string) (*proto.Parameter, error) {
 	pp := &proto.Parameter{Name: p.Name, Format: p.Format}
 	switch p.Type {
 	case "number":
-		v, ok := val.(float64)
-		if !ok {
+		v, err := strconv.ParseFloat(val, 64)
+		if err != nil {
 			break
 		}
-		pp.Value = &proto.Parameter_NumberValue{Number: v}
+		pp.Value = &proto.Parameter_NumberValue{NumberValue: v}
 		return pp, nil
 	case "boolean":
-		v, ok := val.(bool)
-		if !ok {
+		v, err := strconv.ParseBool(val)
+		if err != nil {
 			break
 		}
-		pp.Value = &proto.Parameter_BooleanValue{Boolean: v}
+		pp.Value = &proto.Parameter_BooleanValue{BooleanValue: v}
 		return pp, nil
 	case "integer":
-		v, ok := val.(int64)
-		if !ok {
+		v, err := strconv.ParseInt(val, 10, 64)
+		if err != nil {
 			break
 		}
-		pp.Value = &proto.Parameter_IntegerValue{Integer: v}
+		pp.Value = &proto.Parameter_IntegerValue{IntegerValue: v}
 		return pp, nil
 	default:
-		pp.Value = &proto.Parameter_StringValue{String_: val}
+		pp.Value = &proto.Parameter_StringValue{StringValue: val}
 		return pp, nil
 	}
-	return nil, fmt.Errors("cannot convert parameter %s with value %s to type %s", p.Name, val, p.Type)
+	return nil, fmt.Errorf("cannot convert parameter %s with value %s to type %s", p.Name, val, p.Type)
 }

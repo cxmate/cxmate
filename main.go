@@ -3,8 +3,44 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
+
+//Mate holds the configuration and connection the backing service
+type Mate struct {
+	Config *Config
+	Conn   *ServiceConn
+	Logger *Logger
+}
+
+//NewMate loads configuration and connects to the backing service before returning a new instance of Mate
+func NewMate() (*Mate, error) {
+	config, err := loadConfig()
+	serviceConf := config.Service
+	if err != nil {
+		return nil, fmt.Errorf("loading configuration failed: %v", err)
+	}
+	if err = config.Service.Input.validate(); err != nil {
+		return nil, fmt.Errorf("input validation error, err")
+	}
+	if err = config.Service.Output.validate(); err != nil {
+		return nil, fmt.Errorf("output validation error:", err)
+	}
+	conn, err := NewServiceConn(config.Service.Location)
+	if err != nil {
+		return nil, fmt.Errorf("connecting to service failed: %v", err)
+	}
+	logger, err := config.General.Logger.NewLogger(serviceConf.Name, serviceConf.Version)
+	if err != nil {
+		return nil, fmt.Errorf("logger creation failed: %v", err)
+	}
+	return &Mate{
+		Config: config,
+		Conn:   conn,
+		Logger: logger,
+	}, nil
+}
 
 //Error messages for http replies.
 const (
@@ -15,48 +51,22 @@ const (
 	errorEstablishingConnectionMessage = "failed to establish a client connection to the backing service. Try again later or contact the service author"
 )
 
-//Mate holds the configuration and connection the backing service
-type Mate struct {
-	Config *Config
-	Conn   *ServiceConn
-}
-
-//NewMate loads configuration and connects to the backing service before returning a new instance of Mate
-func NewMate() (*Mate, error) {
-	config, err := loadConfig()
-	if err != nil {
-		return nil, fmt.Errorf("could not load configuration file, error: %v", err)
-	}
-	configureLogger(config.General.Logger)
-	if err = config.Service.Input.validate(); err != nil {
-		return nil, err
-	}
-	if err = config.Service.Output.validate(); err != nil {
-		return nil, err
-	}
-	conn, err := NewServiceConn(config.Service.Location)
-	if err != nil {
-		return nil, fmt.Errorf("could not connect to the service error: %v", err)
-	}
-	return &Mate{
-		Config: config,
-		Conn:   conn,
-	}, nil
-}
-
 func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
-	logDebugln("Request recieved")
+	m.Logger.Infoln("Request received")
 	if req.Method != "POST" {
 		writeHTTPError(res, m.Config.Service.Name, methodNotAllowedMessage, http.StatusMethodNotAllowed)
+		m.Logger.Errorln("Root endpoint requires method: POST received:", req.Method)
 		return
 	}
 	if req.Header.Get("Content-Type") != "application/json" {
 		writeHTTPError(res, m.Config.Service.Name, unsupportedMediaTypeMessage, http.StatusUnsupportedMediaType)
+		m.Logger.Errorln("Root endpoint requires content-type: application/json received:", req.Header.Get("Content-Type"))
 		return
 	}
 	stream, err := m.Conn.NewServiceStream()
 	if err != nil {
 		writeHTTPError(res, m.Config.Service.Name, errorEstablishingConnectionMessage, http.StatusFailedDependency)
+		m.Logger.Errorln("Could not create service stream error:", err)
 		return
 	}
 	err = m.processCX(stream, req.URL.Query(), req.Body, res)
@@ -67,21 +77,22 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Mate) processCX(s *ServiceStream, p map[string][]string, r io.ReadCloser, w io.Writer) error {
-	if err := m.decodeRequestBody(s, p, r); err != nil {
-		logDebug("Processing the request returned an error:", err)
+	if err := m.parseCX(s, p, r); err != nil {
+		m.Logger.Errorln("Parser error:", err)
 		return err
 	}
-	if err := m.encodeResponseBody(s, w); err != nil {
-		logDebug("Generating the response returned an error:", err)
+	if err := m.generateCX(s, w); err != nil {
+		m.Logger.Errorln("Generator error:", err)
 		return err
 	}
 	return nil
 }
 
-func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.ReadCloser) error {
+func (m *Mate) parseCX(s *ServiceStream, p map[string][]string, r io.ReadCloser) error {
+	m.Logger.Debugln("Parsing CX")
 	send := make(chan *Message)
 	s.OpenSend(send)
-	if err := m.processParameters(send, p); err != nil {
+	if err := m.Config.Service.Parameters.send(send, p); err != nil {
 		return err
 	}
 	if err := m.Config.Service.Input.parse(r, send); err != nil {
@@ -91,7 +102,8 @@ func (m *Mate) decodeRequestBody(s *ServiceStream, p map[string][]string, r io.R
 	return nil
 }
 
-func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
+func (m *Mate) generateCX(s *ServiceStream, w io.Writer) error {
+	m.Logger.Debugln("Generating CX")
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
 	if err := m.Config.Service.Output.generate(w, receive); err != nil {
@@ -100,18 +112,13 @@ func (m *Mate) encodeResponseBody(s *ServiceStream, w io.Writer) error {
 	return nil
 }
 
-func newMateMux(cxmate *Mate) *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", cxmate.handleRoot)
-	return mux
-}
-
 func main() {
-	logDebug("cxmate starting")
 	cxmate, err := NewMate()
 	if err != nil {
-		logFatalln(err)
+		log.Fatalln("Initialization of cxMate failed with error:", err)
 	}
-	mux := newMateMux(cxmate)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", cxmate.handleRoot)
+	cxmate.Logger.Infoln("cxMate now listening on", cxmate.Config.General.Location, "connected to service on", cxmate.Config.Service.Location)
 	logFatalln(http.ListenAndServe(cxmate.Config.General.Location, mux))
 }

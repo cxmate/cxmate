@@ -33,6 +33,8 @@ type ServiceConfig struct {
 	Location string `json:"location"`
 	//Name gives a short descriptive name to the algorithm.
 	Name string `json:"name"`
+	//Version gives a version to the algorithm.
+	Version string `json:"version"`
 	//Author is the name(s) of the algorithm author.
 	Author string `json:"author"`
 	//Summary gives a small description of the service, what it does, and any caveats to using it.
@@ -44,7 +46,7 @@ type ServiceConfig struct {
 	//Language should be set to the name of the programming langugage the algorithm is written in.
 	Language string `json:"language"`
 	//Parameters is a list of key/value pair objects that should augment the way an algorithm behaves.
-	Parameters []ParameterConfig `json:"parameters"`
+	Parameters ParameterConfig `json:"parameters"`
 	//Inputs is used to describe multiple networks as input to the algorithm.
 	Input ParserConfig `json:"input"`
 	//Outputs is used to describe multiple networks as output to the algorithm.
