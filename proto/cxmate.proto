@@ -59,7 +59,7 @@ message Parameter {
 //the REST client. Sending back good error messages is good practice.
 message Error {
   int64 status = 1;
-  string code = 2;
+  string type = 2;
   string message = 3;
   string link = 4;
 }
@@ -99,26 +99,26 @@ message Edge {
 message NodeAttribute {
   int64 nodeId = 1 [ json_name = "po" ];
   string name = 2 [ json_name = "n" ];
-//  google.protobuf.Any value = 3 [ json_name = "v" ];
   string value = 3 [ json_name = "v" ];
   string type = 4 [ json_name = "d" ];
+  int64 subnetId = 5 [ json_name = "s" ];
 }
 
 //EdgeAttribute represents a single attribute attached to an edge.
 message EdgeAttribute {
   int64 edgeId = 1 [ json_name = "po" ];
   string name = 2 [ json_name = "n" ];
-//  google.protobuf.Any value = 3 [ json_name = "v" ];
   string value = 3 [ json_name = "v" ];
   string type = 4 [ json_name = "d" ];
+  int64 subnetId = 5 [ json_name = "s" ];
 }
 
 //NetworkAttribute represents a single attribute attached to a network.
 message NetworkAttribute {
-  string name = 2 [ json_name = "n" ];
-//  google.protobuf.Any value = 3 [ json_name = "v" ];
-  string value = 3 [ json_name = "v" ];
-  string type = 4 [ json_name = "d" ];
+  string name = 1 [ json_name = "n" ];
+  string value = 2 [ json_name = "v" ];
+  string type = 3 [ json_name = "d" ];
+  int64 subnetId = 4 [ json_name = "s" ];
 }
 
 //CartesianLayout represents an (x,y,(z)) coordinate attached to a node.
@@ -127,4 +127,5 @@ message CartesianLayout {
   double x = 2;
   double y = 3;
   double z = 4;
+  int64 viewId = 5 [ json_name = "view" ];
 }
