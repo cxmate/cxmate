@@ -17,10 +17,10 @@ type Mate struct {
 //NewMate loads configuration and connects to the backing service before returning a new instance of Mate
 func NewMate() (*Mate, error) {
 	config, err := loadConfig()
-	serviceConf := config.Service
 	if err != nil {
 		return nil, fmt.Errorf("loading configuration failed: %v", err)
 	}
+	serviceConf := config.Service
 	if err = config.General.validate(); err != nil {
 		return nil, fmt.Errorf("config validation error: %v", err)
 	}
