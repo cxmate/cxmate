@@ -3,6 +3,7 @@ package main
 import (
 	"math/rand"
 	"os"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -54,7 +55,7 @@ func (c LogConfig) NewLogger(service string, version string) (*Logger, error) {
 
 func randID(n int) string {
 	b := make([]rune, n)
-
+	rand.Seed(time.Now().UnixNano())
 	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]

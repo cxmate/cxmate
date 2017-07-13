@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 // GeneratorConfig contains a description of each network that cxMate will generate for the service.
@@ -104,6 +104,7 @@ func (g *Generator) network(network string, aspects []string) error {
 		return err
 	}
 	for g.elements.hasNext() {
+		fmt.Println("Has next")
 		if elementNetwork, _ := g.elements.peekNetwork(); elementNetwork != network {
 			break
 		}

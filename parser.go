@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 // NetworkDescription describes a single CX network.

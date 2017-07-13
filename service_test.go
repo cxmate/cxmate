@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 // TestNewServiceConn checks that a connection to a real grpc server can be established and torn down correctly.

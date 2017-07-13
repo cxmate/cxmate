@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 	"google.golang.org/grpc"
 )
 
@@ -102,6 +103,7 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 			if err == io.EOF {
 				break
 			}
+			fmt.Println(ele)
 			r <- &Message{
 				ele: ele,
 				err: err,

@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 func TestConvertNumber(t *testing.T) {

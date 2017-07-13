@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 func TestPushInvalidBracket(t *testing.T) {

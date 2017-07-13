@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 // ParameterConfig contains a series of Parameter definitions that cxMate will use to convert
@@ -48,7 +48,7 @@ func (params ParameterConfig) send(send chan *Message, query map[string][]string
 // for the service such as an unsigned integer, password, or complex object. The description will be used
 // for the service specification.
 type Parameter struct {
-	Name        string `json:"key"`
+	Name        string `json:"name"`
 	Default     string `json:"default"`
 	Description string `json:"description"`
 	Type        string `json:"type"`

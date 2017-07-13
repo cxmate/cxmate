@@ -24,6 +24,9 @@ func NewMate() (*Mate, error) {
 	if err = config.General.validate(); err != nil {
 		return nil, fmt.Errorf("config validation error: %v", err)
 	}
+	if err = config.Service.Parameters.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
+	}
 	if err = config.Service.Input.validate(); err != nil {
 		return nil, fmt.Errorf("config validation error: %v", err)
 	}
@@ -78,10 +81,15 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	io.WriteString(res, `{"data":`)
-	if err := m.generateCX(stream, res); err != nil {
+	detector := &WriteDetector{res, false}
+	if err := m.generateCX(stream, detector); err != nil {
 		m.Logger.Errorln("Generator error:", err)
+		if !detector.Wrote {
+			io.WriteString(res, `""`)
+		}
 		io.WriteString(res, `, "errors":[`)
-		writeHTTPError(res, m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
+		httpErr := NewHTTPError(m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
+		httpErr.toJSON(res)
 		io.WriteString(res, `]}`)
 	} else {
 		io.WriteString(res, `, "errors":[]}`)
@@ -121,4 +129,23 @@ func main() {
 	mux.HandleFunc("/", cxmate.handleRoot)
 	cxmate.Logger.Infoln("cxMate now listening on", cxmate.Config.General.Location, "connected to service on", cxmate.Config.Service.Location)
 	logFatalln(http.ListenAndServe(cxmate.Config.General.Location, mux))
+}
+
+//WriteDetector determines if a write has been made to a writer
+type WriteDetector struct {
+	http.ResponseWriter
+	Wrote bool
+}
+
+//Write writes to the response writer
+func (w *WriteDetector) Write(b []byte) (int, error) {
+	fmt.Println("Writing", string(b))
+	w.Wrote = true
+	return w.ResponseWriter.Write(b)
+}
+
+//WriteHeader writes to the response header
+func (w *WriteDetector) WriteHeader(code int) {
+	w.Wrote = true
+	w.ResponseWriter.WriteHeader(code)
 }
