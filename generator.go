@@ -104,7 +104,6 @@ func (g *Generator) network(network string, aspects []string) error {
 		return err
 	}
 	for g.elements.hasNext() {
-		fmt.Println("Has next")
 		if elementNetwork, _ := g.elements.peekNetwork(); elementNetwork != network {
 			break
 		}
@@ -125,9 +124,9 @@ func (g *Generator) network(network string, aspects []string) error {
 // numberVerfication generates a numberVerification aspect.
 func (g *Generator) numberVerification(network string) error {
 	logDebugln("Generating number verification in", network)
-	nv := map[string]map[string]int{
-		"numberVerification": map[string]int{
-			"longNumber": 281474976710655,
+	nv := map[string][]map[string]int{
+		"numberVerification": []map[string]int{
+			map[string]int{"longNumber": 281474976710655},
 		},
 	}
 	if err := g.value(nv); err != nil {

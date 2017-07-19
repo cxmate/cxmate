@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/cxmate/cxmate/proto"
@@ -103,7 +102,6 @@ func (ss *ServiceStream) OpenReceive(r chan<- *Message) {
 			if err == io.EOF {
 				break
 			}
-			fmt.Println(ele)
 			r <- &Message{
 				ele: ele,
 				err: err,

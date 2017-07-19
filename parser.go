@@ -181,10 +181,6 @@ func (p *Parser) aspect(network string, aspects []string) error {
 	if err != nil {
 		return err
 	}
-	if aspect == "metaData" {
-		logDebugln("Parsing post-metadata in", network, "returning EOF")
-		return io.EOF
-	}
 	var shouldRead bool
 	for _, requiredAspect := range aspects {
 		if aspect == requiredAspect {

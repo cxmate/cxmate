@@ -438,7 +438,7 @@ func TestGenerateNumberVerification(t *testing.T) {
 	if err := g.numberVerification("test network"); err != nil {
 		t.Error(err)
 	}
-	expected := `{"numberVerification":{"longNumber":281474976710655}}`
+	expected := `{"numberVerification":[{"longNumber":281474976710655}]}`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -563,7 +563,7 @@ func TestGenerateNetwork(t *testing.T) {
 	if err := g.network("test network", []string{"nodes", "edges"}); err != nil {
 		t.Error(err)
 	}
-	expected := `[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"nodes"},{"name":"edges"}]},{"nodes":[{"@id":"1"}]},{"edges":[{"@id":"1"}]},{"nodes":[{"@id":"1"},{"@id":"1"}]},{"edges":[{"@id":"1"}]}]`
+	expected := `[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"},{"name":"edges"}]},{"nodes":[{"@id":"1"}]},{"edges":[{"@id":"1"}]},{"nodes":[{"@id":"1"},{"@id":"1"}]},{"edges":[{"@id":"1"}]}]`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -634,7 +634,7 @@ func TestGenerateStream(t *testing.T) {
 	if err := g.stream(conf); err != nil {
 		t.Error(err)
 	}
-	expected := `[[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
+	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -694,10 +694,10 @@ func TestRun(t *testing.T) {
 	}
 	genConf := GeneratorConfig(conf)
 	buf := bytes.NewBufferString("")
-	if err := genConf.generate(buf, s); err != nil {
+	if err := genConf.generate(buf, s, false); err != nil {
 		t.Error(err)
 	}
-	expected := `[[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":{"longNumber":281474976710655}},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
+	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}

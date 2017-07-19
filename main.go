@@ -139,7 +139,6 @@ type WriteDetector struct {
 
 //Write writes to the response writer
 func (w *WriteDetector) Write(b []byte) (int, error) {
-	fmt.Println("Writing", string(b))
 	w.Wrote = true
 	return w.ResponseWriter.Write(b)
 }

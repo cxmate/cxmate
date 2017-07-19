@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 )
 
 func TestParseBracket(t *testing.T) {

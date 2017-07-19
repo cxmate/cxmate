@@ -26,9 +26,11 @@ var completeConfig = `
 		"language": "Python",
 		"parameters": [
 			{
-				"key": "test_param",
+				"name": "test_param",
 				"default": "1",
-				"description": "test param"
+				"description": "test param",
+				"type": "integer",
+				"format": "test"
 			}
 		]
 	}
@@ -85,7 +87,7 @@ func TestLoadConfig(t *testing.T) {
 		t.Fatal("config.Service.Parameters does not contain the correct amount of parameters")
 	}
 	if config.Service.Parameters[0].Name != "test_param" {
-		t.Error("config.Service.Parameters[0].Key not set")
+		t.Error("config.Service.Parameters[0].Name not set")
 	}
 	if config.Service.Parameters[0].Default != "1" {
 		t.Error("config.Service.Parameters[0].Default not set")
@@ -93,4 +95,11 @@ func TestLoadConfig(t *testing.T) {
 	if config.Service.Parameters[0].Description != "test param" {
 		t.Error("config.Service.Parameters[0].Description not set")
 	}
+	if config.Service.Parameters[0].Type != "integer" {
+		t.Error("config.Service.Parameters[0].Type not set")
+	}
+	if config.Service.Parameters[0].Format != "test" {
+		t.Error("config.Service.Parameters[0].Format not set")
+	}
+
 }
