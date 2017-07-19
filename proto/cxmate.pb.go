@@ -16,7 +16,25 @@ It has these top-level messages:
 	NodeAttribute
 	EdgeAttribute
 	NetworkAttribute
-	CartesianLayout
+	CartesianCoordinate
+	CyGroup
+	CyView
+	CyVisualProperty
+	CyHiddenAttribute
+	CyNetworkRelation
+	CySubNetwork
+	CyTableColumn
+	NdexStatus
+	Citation
+	CitationAttribute
+	NodeCitations
+	EdgeCitations
+	Support
+	SupportAttribute
+	NodeSupportance
+	EdgeSupportance
+	FunctionTerm
+	ReifiedEdge
 */
 package proto
 
@@ -40,11 +58,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto1.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// NetworkElement is a wrapper that constains a label, which is used to allow
-// StreamNetworks to send and receive more than one network.NetworkElement is also a wrapper for exactly one element.
-// Some elements do not exist in CX, like Parameter and Error, which are special elements used to communicate out of band information
-// between cxMate and a service. The other elements corrospond to an aspect in a CX document. These
-// elements should be used to build networks, and turn networks back into elements cxMate can understand.
+// NetworkElement is a wrapper for all of the cxMate supported element types.
 type NetworkElement struct {
 	Label string `protobuf:"bytes,1,opt,name=label" json:"label,omitempty"`
 	// Types that are valid to be assigned to Element:
@@ -55,7 +69,23 @@ type NetworkElement struct {
 	//	*NetworkElement_NodeAttribute
 	//	*NetworkElement_EdgeAttribute
 	//	*NetworkElement_NetworkAttribute
-	//	*NetworkElement_CartesianLayout
+	//	*NetworkElement_CartesianCoordinate
+	//	*NetworkElement_CyGroup
+	//	*NetworkElement_CyView
+	//	*NetworkElement_CyVisualProperty
+	//	*NetworkElement_CyHiddenAttribute
+	//	*NetworkElement_CyNetworkRelation
+	//	*NetworkElement_CySubNetwork
+	//	*NetworkElement_CyTableColumn
+	//	*NetworkElement_NdexStatus
+	//	*NetworkElement_Citation
+	//	*NetworkElement_NodeCitations
+	//	*NetworkElement_EdgeCitations
+	//	*NetworkElement_Support
+	//	*NetworkElement_NodeSupportance
+	//	*NetworkElement_EdgeSupportance
+	//	*NetworkElement_FunctionTerm
+	//	*NetworkElement_ReifiedEdge
 	Element isNetworkElement_Element `protobuf_oneof:"element"`
 }
 
@@ -89,18 +119,82 @@ type NetworkElement_EdgeAttribute struct {
 type NetworkElement_NetworkAttribute struct {
 	NetworkAttribute *NetworkAttribute `protobuf:"bytes,8,opt,name=networkAttribute,oneof"`
 }
-type NetworkElement_CartesianLayout struct {
-	CartesianLayout *CartesianLayout `protobuf:"bytes,9,opt,name=cartesianLayout,oneof"`
+type NetworkElement_CartesianCoordinate struct {
+	CartesianCoordinate *CartesianCoordinate `protobuf:"bytes,9,opt,name=CartesianCoordinate,oneof"`
+}
+type NetworkElement_CyGroup struct {
+	CyGroup *CyGroup `protobuf:"bytes,10,opt,name=cyGroup,oneof"`
+}
+type NetworkElement_CyView struct {
+	CyView *CyView `protobuf:"bytes,11,opt,name=cyView,oneof"`
+}
+type NetworkElement_CyVisualProperty struct {
+	CyVisualProperty *CyVisualProperty `protobuf:"bytes,12,opt,name=cyVisualProperty,oneof"`
+}
+type NetworkElement_CyHiddenAttribute struct {
+	CyHiddenAttribute *CyHiddenAttribute `protobuf:"bytes,13,opt,name=cyHiddenAttribute,oneof"`
+}
+type NetworkElement_CyNetworkRelation struct {
+	CyNetworkRelation *CyNetworkRelation `protobuf:"bytes,14,opt,name=cyNetworkRelation,oneof"`
+}
+type NetworkElement_CySubNetwork struct {
+	CySubNetwork *CySubNetwork `protobuf:"bytes,15,opt,name=cySubNetwork,oneof"`
+}
+type NetworkElement_CyTableColumn struct {
+	CyTableColumn *CyTableColumn `protobuf:"bytes,16,opt,name=cyTableColumn,oneof"`
+}
+type NetworkElement_NdexStatus struct {
+	NdexStatus *NdexStatus `protobuf:"bytes,17,opt,name=ndexStatus,oneof"`
+}
+type NetworkElement_Citation struct {
+	Citation *Citation `protobuf:"bytes,18,opt,name=citation,oneof"`
+}
+type NetworkElement_NodeCitations struct {
+	NodeCitations *NodeCitations `protobuf:"bytes,19,opt,name=nodeCitations,oneof"`
+}
+type NetworkElement_EdgeCitations struct {
+	EdgeCitations *EdgeCitations `protobuf:"bytes,20,opt,name=edgeCitations,oneof"`
+}
+type NetworkElement_Support struct {
+	Support *Support `protobuf:"bytes,21,opt,name=support,oneof"`
+}
+type NetworkElement_NodeSupportance struct {
+	NodeSupportance *NodeSupportance `protobuf:"bytes,22,opt,name=nodeSupportance,oneof"`
+}
+type NetworkElement_EdgeSupportance struct {
+	EdgeSupportance *EdgeSupportance `protobuf:"bytes,23,opt,name=edgeSupportance,oneof"`
+}
+type NetworkElement_FunctionTerm struct {
+	FunctionTerm *FunctionTerm `protobuf:"bytes,24,opt,name=functionTerm,oneof"`
+}
+type NetworkElement_ReifiedEdge struct {
+	ReifiedEdge *ReifiedEdge `protobuf:"bytes,25,opt,name=reifiedEdge,oneof"`
 }
 
-func (*NetworkElement_Parameter) isNetworkElement_Element()        {}
-func (*NetworkElement_Error) isNetworkElement_Element()            {}
-func (*NetworkElement_Node) isNetworkElement_Element()             {}
-func (*NetworkElement_Edge) isNetworkElement_Element()             {}
-func (*NetworkElement_NodeAttribute) isNetworkElement_Element()    {}
-func (*NetworkElement_EdgeAttribute) isNetworkElement_Element()    {}
-func (*NetworkElement_NetworkAttribute) isNetworkElement_Element() {}
-func (*NetworkElement_CartesianLayout) isNetworkElement_Element()  {}
+func (*NetworkElement_Parameter) isNetworkElement_Element()           {}
+func (*NetworkElement_Error) isNetworkElement_Element()               {}
+func (*NetworkElement_Node) isNetworkElement_Element()                {}
+func (*NetworkElement_Edge) isNetworkElement_Element()                {}
+func (*NetworkElement_NodeAttribute) isNetworkElement_Element()       {}
+func (*NetworkElement_EdgeAttribute) isNetworkElement_Element()       {}
+func (*NetworkElement_NetworkAttribute) isNetworkElement_Element()    {}
+func (*NetworkElement_CartesianCoordinate) isNetworkElement_Element() {}
+func (*NetworkElement_CyGroup) isNetworkElement_Element()             {}
+func (*NetworkElement_CyView) isNetworkElement_Element()              {}
+func (*NetworkElement_CyVisualProperty) isNetworkElement_Element()    {}
+func (*NetworkElement_CyHiddenAttribute) isNetworkElement_Element()   {}
+func (*NetworkElement_CyNetworkRelation) isNetworkElement_Element()   {}
+func (*NetworkElement_CySubNetwork) isNetworkElement_Element()        {}
+func (*NetworkElement_CyTableColumn) isNetworkElement_Element()       {}
+func (*NetworkElement_NdexStatus) isNetworkElement_Element()          {}
+func (*NetworkElement_Citation) isNetworkElement_Element()            {}
+func (*NetworkElement_NodeCitations) isNetworkElement_Element()       {}
+func (*NetworkElement_EdgeCitations) isNetworkElement_Element()       {}
+func (*NetworkElement_Support) isNetworkElement_Element()             {}
+func (*NetworkElement_NodeSupportance) isNetworkElement_Element()     {}
+func (*NetworkElement_EdgeSupportance) isNetworkElement_Element()     {}
+func (*NetworkElement_FunctionTerm) isNetworkElement_Element()        {}
+func (*NetworkElement_ReifiedEdge) isNetworkElement_Element()         {}
 
 func (m *NetworkElement) GetElement() isNetworkElement_Element {
 	if m != nil {
@@ -165,9 +259,121 @@ func (m *NetworkElement) GetNetworkAttribute() *NetworkAttribute {
 	return nil
 }
 
-func (m *NetworkElement) GetCartesianLayout() *CartesianLayout {
-	if x, ok := m.GetElement().(*NetworkElement_CartesianLayout); ok {
-		return x.CartesianLayout
+func (m *NetworkElement) GetCartesianCoordinate() *CartesianCoordinate {
+	if x, ok := m.GetElement().(*NetworkElement_CartesianCoordinate); ok {
+		return x.CartesianCoordinate
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyGroup() *CyGroup {
+	if x, ok := m.GetElement().(*NetworkElement_CyGroup); ok {
+		return x.CyGroup
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyView() *CyView {
+	if x, ok := m.GetElement().(*NetworkElement_CyView); ok {
+		return x.CyView
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyVisualProperty() *CyVisualProperty {
+	if x, ok := m.GetElement().(*NetworkElement_CyVisualProperty); ok {
+		return x.CyVisualProperty
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyHiddenAttribute() *CyHiddenAttribute {
+	if x, ok := m.GetElement().(*NetworkElement_CyHiddenAttribute); ok {
+		return x.CyHiddenAttribute
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyNetworkRelation() *CyNetworkRelation {
+	if x, ok := m.GetElement().(*NetworkElement_CyNetworkRelation); ok {
+		return x.CyNetworkRelation
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCySubNetwork() *CySubNetwork {
+	if x, ok := m.GetElement().(*NetworkElement_CySubNetwork); ok {
+		return x.CySubNetwork
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCyTableColumn() *CyTableColumn {
+	if x, ok := m.GetElement().(*NetworkElement_CyTableColumn); ok {
+		return x.CyTableColumn
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetNdexStatus() *NdexStatus {
+	if x, ok := m.GetElement().(*NetworkElement_NdexStatus); ok {
+		return x.NdexStatus
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetCitation() *Citation {
+	if x, ok := m.GetElement().(*NetworkElement_Citation); ok {
+		return x.Citation
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetNodeCitations() *NodeCitations {
+	if x, ok := m.GetElement().(*NetworkElement_NodeCitations); ok {
+		return x.NodeCitations
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetEdgeCitations() *EdgeCitations {
+	if x, ok := m.GetElement().(*NetworkElement_EdgeCitations); ok {
+		return x.EdgeCitations
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetSupport() *Support {
+	if x, ok := m.GetElement().(*NetworkElement_Support); ok {
+		return x.Support
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetNodeSupportance() *NodeSupportance {
+	if x, ok := m.GetElement().(*NetworkElement_NodeSupportance); ok {
+		return x.NodeSupportance
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetEdgeSupportance() *EdgeSupportance {
+	if x, ok := m.GetElement().(*NetworkElement_EdgeSupportance); ok {
+		return x.EdgeSupportance
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetFunctionTerm() *FunctionTerm {
+	if x, ok := m.GetElement().(*NetworkElement_FunctionTerm); ok {
+		return x.FunctionTerm
+	}
+	return nil
+}
+
+func (m *NetworkElement) GetReifiedEdge() *ReifiedEdge {
+	if x, ok := m.GetElement().(*NetworkElement_ReifiedEdge); ok {
+		return x.ReifiedEdge
 	}
 	return nil
 }
@@ -182,7 +388,23 @@ func (*NetworkElement) XXX_OneofFuncs() (func(msg proto1.Message, b *proto1.Buff
 		(*NetworkElement_NodeAttribute)(nil),
 		(*NetworkElement_EdgeAttribute)(nil),
 		(*NetworkElement_NetworkAttribute)(nil),
-		(*NetworkElement_CartesianLayout)(nil),
+		(*NetworkElement_CartesianCoordinate)(nil),
+		(*NetworkElement_CyGroup)(nil),
+		(*NetworkElement_CyView)(nil),
+		(*NetworkElement_CyVisualProperty)(nil),
+		(*NetworkElement_CyHiddenAttribute)(nil),
+		(*NetworkElement_CyNetworkRelation)(nil),
+		(*NetworkElement_CySubNetwork)(nil),
+		(*NetworkElement_CyTableColumn)(nil),
+		(*NetworkElement_NdexStatus)(nil),
+		(*NetworkElement_Citation)(nil),
+		(*NetworkElement_NodeCitations)(nil),
+		(*NetworkElement_EdgeCitations)(nil),
+		(*NetworkElement_Support)(nil),
+		(*NetworkElement_NodeSupportance)(nil),
+		(*NetworkElement_EdgeSupportance)(nil),
+		(*NetworkElement_FunctionTerm)(nil),
+		(*NetworkElement_ReifiedEdge)(nil),
 	}
 }
 
@@ -225,9 +447,89 @@ func _NetworkElement_OneofMarshaler(msg proto1.Message, b *proto1.Buffer) error 
 		if err := b.EncodeMessage(x.NetworkAttribute); err != nil {
 			return err
 		}
-	case *NetworkElement_CartesianLayout:
+	case *NetworkElement_CartesianCoordinate:
 		b.EncodeVarint(9<<3 | proto1.WireBytes)
-		if err := b.EncodeMessage(x.CartesianLayout); err != nil {
+		if err := b.EncodeMessage(x.CartesianCoordinate); err != nil {
+			return err
+		}
+	case *NetworkElement_CyGroup:
+		b.EncodeVarint(10<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyGroup); err != nil {
+			return err
+		}
+	case *NetworkElement_CyView:
+		b.EncodeVarint(11<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyView); err != nil {
+			return err
+		}
+	case *NetworkElement_CyVisualProperty:
+		b.EncodeVarint(12<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyVisualProperty); err != nil {
+			return err
+		}
+	case *NetworkElement_CyHiddenAttribute:
+		b.EncodeVarint(13<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyHiddenAttribute); err != nil {
+			return err
+		}
+	case *NetworkElement_CyNetworkRelation:
+		b.EncodeVarint(14<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyNetworkRelation); err != nil {
+			return err
+		}
+	case *NetworkElement_CySubNetwork:
+		b.EncodeVarint(15<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CySubNetwork); err != nil {
+			return err
+		}
+	case *NetworkElement_CyTableColumn:
+		b.EncodeVarint(16<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.CyTableColumn); err != nil {
+			return err
+		}
+	case *NetworkElement_NdexStatus:
+		b.EncodeVarint(17<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.NdexStatus); err != nil {
+			return err
+		}
+	case *NetworkElement_Citation:
+		b.EncodeVarint(18<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.Citation); err != nil {
+			return err
+		}
+	case *NetworkElement_NodeCitations:
+		b.EncodeVarint(19<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.NodeCitations); err != nil {
+			return err
+		}
+	case *NetworkElement_EdgeCitations:
+		b.EncodeVarint(20<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.EdgeCitations); err != nil {
+			return err
+		}
+	case *NetworkElement_Support:
+		b.EncodeVarint(21<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.Support); err != nil {
+			return err
+		}
+	case *NetworkElement_NodeSupportance:
+		b.EncodeVarint(22<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.NodeSupportance); err != nil {
+			return err
+		}
+	case *NetworkElement_EdgeSupportance:
+		b.EncodeVarint(23<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.EdgeSupportance); err != nil {
+			return err
+		}
+	case *NetworkElement_FunctionTerm:
+		b.EncodeVarint(24<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.FunctionTerm); err != nil {
+			return err
+		}
+	case *NetworkElement_ReifiedEdge:
+		b.EncodeVarint(25<<3 | proto1.WireBytes)
+		if err := b.EncodeMessage(x.ReifiedEdge); err != nil {
 			return err
 		}
 	case nil:
@@ -296,13 +598,141 @@ func _NetworkElement_OneofUnmarshaler(msg proto1.Message, tag, wire int, b *prot
 		err := b.DecodeMessage(msg)
 		m.Element = &NetworkElement_NetworkAttribute{msg}
 		return true, err
-	case 9: // element.cartesianLayout
+	case 9: // element.CartesianCoordinate
 		if wire != proto1.WireBytes {
 			return true, proto1.ErrInternalBadWireType
 		}
-		msg := new(CartesianLayout)
+		msg := new(CartesianCoordinate)
 		err := b.DecodeMessage(msg)
-		m.Element = &NetworkElement_CartesianLayout{msg}
+		m.Element = &NetworkElement_CartesianCoordinate{msg}
+		return true, err
+	case 10: // element.cyGroup
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyGroup)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyGroup{msg}
+		return true, err
+	case 11: // element.cyView
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyView)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyView{msg}
+		return true, err
+	case 12: // element.cyVisualProperty
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyVisualProperty)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyVisualProperty{msg}
+		return true, err
+	case 13: // element.cyHiddenAttribute
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyHiddenAttribute)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyHiddenAttribute{msg}
+		return true, err
+	case 14: // element.cyNetworkRelation
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyNetworkRelation)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyNetworkRelation{msg}
+		return true, err
+	case 15: // element.cySubNetwork
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CySubNetwork)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CySubNetwork{msg}
+		return true, err
+	case 16: // element.cyTableColumn
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(CyTableColumn)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_CyTableColumn{msg}
+		return true, err
+	case 17: // element.ndexStatus
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(NdexStatus)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_NdexStatus{msg}
+		return true, err
+	case 18: // element.citation
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(Citation)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_Citation{msg}
+		return true, err
+	case 19: // element.nodeCitations
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(NodeCitations)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_NodeCitations{msg}
+		return true, err
+	case 20: // element.edgeCitations
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(EdgeCitations)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_EdgeCitations{msg}
+		return true, err
+	case 21: // element.support
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(Support)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_Support{msg}
+		return true, err
+	case 22: // element.nodeSupportance
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(NodeSupportance)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_NodeSupportance{msg}
+		return true, err
+	case 23: // element.edgeSupportance
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(EdgeSupportance)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_EdgeSupportance{msg}
+		return true, err
+	case 24: // element.functionTerm
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(FunctionTerm)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_FunctionTerm{msg}
+		return true, err
+	case 25: // element.reifiedEdge
+		if wire != proto1.WireBytes {
+			return true, proto1.ErrInternalBadWireType
+		}
+		msg := new(ReifiedEdge)
+		err := b.DecodeMessage(msg)
+		m.Element = &NetworkElement_ReifiedEdge{msg}
 		return true, err
 	default:
 		return false, nil
@@ -348,9 +778,89 @@ func _NetworkElement_OneofSizer(msg proto1.Message) (n int) {
 		n += proto1.SizeVarint(8<<3 | proto1.WireBytes)
 		n += proto1.SizeVarint(uint64(s))
 		n += s
-	case *NetworkElement_CartesianLayout:
-		s := proto1.Size(x.CartesianLayout)
+	case *NetworkElement_CartesianCoordinate:
+		s := proto1.Size(x.CartesianCoordinate)
 		n += proto1.SizeVarint(9<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyGroup:
+		s := proto1.Size(x.CyGroup)
+		n += proto1.SizeVarint(10<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyView:
+		s := proto1.Size(x.CyView)
+		n += proto1.SizeVarint(11<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyVisualProperty:
+		s := proto1.Size(x.CyVisualProperty)
+		n += proto1.SizeVarint(12<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyHiddenAttribute:
+		s := proto1.Size(x.CyHiddenAttribute)
+		n += proto1.SizeVarint(13<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyNetworkRelation:
+		s := proto1.Size(x.CyNetworkRelation)
+		n += proto1.SizeVarint(14<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CySubNetwork:
+		s := proto1.Size(x.CySubNetwork)
+		n += proto1.SizeVarint(15<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_CyTableColumn:
+		s := proto1.Size(x.CyTableColumn)
+		n += proto1.SizeVarint(16<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_NdexStatus:
+		s := proto1.Size(x.NdexStatus)
+		n += proto1.SizeVarint(17<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_Citation:
+		s := proto1.Size(x.Citation)
+		n += proto1.SizeVarint(18<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_NodeCitations:
+		s := proto1.Size(x.NodeCitations)
+		n += proto1.SizeVarint(19<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_EdgeCitations:
+		s := proto1.Size(x.EdgeCitations)
+		n += proto1.SizeVarint(20<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_Support:
+		s := proto1.Size(x.Support)
+		n += proto1.SizeVarint(21<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_NodeSupportance:
+		s := proto1.Size(x.NodeSupportance)
+		n += proto1.SizeVarint(22<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_EdgeSupportance:
+		s := proto1.Size(x.EdgeSupportance)
+		n += proto1.SizeVarint(23<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_FunctionTerm:
+		s := proto1.Size(x.FunctionTerm)
+		n += proto1.SizeVarint(24<<3 | proto1.WireBytes)
+		n += proto1.SizeVarint(uint64(s))
+		n += s
+	case *NetworkElement_ReifiedEdge:
+		s := proto1.Size(x.ReifiedEdge)
+		n += proto1.SizeVarint(25<<3 | proto1.WireBytes)
 		n += proto1.SizeVarint(uint64(s))
 		n += s
 	case nil:
@@ -360,10 +870,7 @@ func _NetworkElement_OneofSizer(msg proto1.Message) (n int) {
 	return n
 }
 
-// Parameter represents a named value passed from cxMate to the service.
-// A service should never send a Parameter to cxMate, it will be discarded.
-// Parameters are usually used to pass query string parameters (?key=value pairs in a URL)
-// to a service for small tweaks to the way a service runs.
+// Parameter represents a service parameter.
 type Parameter struct {
 	Name   string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	Format string `protobuf:"bytes,2,opt,name=format" json:"format,omitempty"`
@@ -548,9 +1055,7 @@ func _Parameter_OneofSizer(msg proto1.Message) (n int) {
 	return n
 }
 
-// Error represents an error from either cxMate or the service. Errors sent
-// from the service to cxMate will be encoded in the final JSON response returned to
-// the REST client. Sending back good error messages is good practice.
+// Error represents a service error.
 type Error struct {
 	Status  int64  `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
 	Type    string `protobuf:"bytes,2,opt,name=type" json:"type,omitempty"`
@@ -591,6 +1096,7 @@ func (m *Error) GetLink() string {
 	return ""
 }
 
+// aspect: node
 // Node represents a single node in a network.
 type Node struct {
 	Id         int64  `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
@@ -624,6 +1130,7 @@ func (m *Node) GetRepresents() string {
 	return ""
 }
 
+// aspect: edge
 // Edge represents a single edge in a network.
 type Edge struct {
 	Id          int64  `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
@@ -665,6 +1172,7 @@ func (m *Edge) GetInteraction() string {
 	return ""
 }
 
+// aspect: nodeAttribute
 // NodeAttribute represents a single attribute attached to a node.
 type NodeAttribute struct {
 	NodeId   int64  `protobuf:"varint,1,opt,name=nodeId,json=po" json:"nodeId,omitempty"`
@@ -714,6 +1222,7 @@ func (m *NodeAttribute) GetSubnetId() int64 {
 	return 0
 }
 
+// aspect: edgeAttribute
 // EdgeAttribute represents a single attribute attached to an edge.
 type EdgeAttribute struct {
 	EdgeId   int64  `protobuf:"varint,1,opt,name=edgeId,json=po" json:"edgeId,omitempty"`
@@ -763,6 +1272,7 @@ func (m *EdgeAttribute) GetSubnetId() int64 {
 	return 0
 }
 
+// aspect: networkAttributes
 // NetworkAttribute represents a single attribute attached to a network.
 type NetworkAttribute struct {
 	Name     string `protobuf:"bytes,1,opt,name=name,json=n" json:"name,omitempty"`
@@ -804,8 +1314,9 @@ func (m *NetworkAttribute) GetSubnetId() int64 {
 	return 0
 }
 
-// CartesianLayout represents an (x,y,(z)) coordinate attached to a node.
-type CartesianLayout struct {
+// aspect: cartesianLayout
+// CartesianCoordinate represents an (x,y,(z)) coordinate attached to a node.
+type CartesianCoordinate struct {
 	NodeId int64   `protobuf:"varint,1,opt,name=nodeId,json=node" json:"nodeId,omitempty"`
 	X      float64 `protobuf:"fixed64,2,opt,name=x" json:"x,omitempty"`
 	Y      float64 `protobuf:"fixed64,3,opt,name=y" json:"y,omitempty"`
@@ -813,42 +1324,756 @@ type CartesianLayout struct {
 	ViewId int64   `protobuf:"varint,5,opt,name=viewId,json=view" json:"viewId,omitempty"`
 }
 
-func (m *CartesianLayout) Reset()                    { *m = CartesianLayout{} }
-func (m *CartesianLayout) String() string            { return proto1.CompactTextString(m) }
-func (*CartesianLayout) ProtoMessage()               {}
-func (*CartesianLayout) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+func (m *CartesianCoordinate) Reset()                    { *m = CartesianCoordinate{} }
+func (m *CartesianCoordinate) String() string            { return proto1.CompactTextString(m) }
+func (*CartesianCoordinate) ProtoMessage()               {}
+func (*CartesianCoordinate) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
 
-func (m *CartesianLayout) GetNodeId() int64 {
+func (m *CartesianCoordinate) GetNodeId() int64 {
 	if m != nil {
 		return m.NodeId
 	}
 	return 0
 }
 
-func (m *CartesianLayout) GetX() float64 {
+func (m *CartesianCoordinate) GetX() float64 {
 	if m != nil {
 		return m.X
 	}
 	return 0
 }
 
-func (m *CartesianLayout) GetY() float64 {
+func (m *CartesianCoordinate) GetY() float64 {
 	if m != nil {
 		return m.Y
 	}
 	return 0
 }
 
-func (m *CartesianLayout) GetZ() float64 {
+func (m *CartesianCoordinate) GetZ() float64 {
 	if m != nil {
 		return m.Z
 	}
 	return 0
 }
 
-func (m *CartesianLayout) GetViewId() int64 {
+func (m *CartesianCoordinate) GetViewId() int64 {
 	if m != nil {
 		return m.ViewId
+	}
+	return 0
+}
+
+// aspect: cyGroups
+// CyGroup represents a Cytoscape group.
+type CyGroup struct {
+	Id            int64   `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
+	View          int64   `protobuf:"varint,2,opt,name=view" json:"view,omitempty"`
+	Name          string  `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
+	Nodes         []int64 `protobuf:"varint,4,rep,packed,name=nodes" json:"nodes,omitempty"`
+	ExternalEdges []int64 `protobuf:"varint,5,rep,packed,name=externalEdges,json=external_edge" json:"externalEdges,omitempty"`
+	InternalEdges []int64 `protobuf:"varint,6,rep,packed,name=internalEdges,json=internal_edges" json:"internalEdges,omitempty"`
+}
+
+func (m *CyGroup) Reset()                    { *m = CyGroup{} }
+func (m *CyGroup) String() string            { return proto1.CompactTextString(m) }
+func (*CyGroup) ProtoMessage()               {}
+func (*CyGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+
+func (m *CyGroup) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *CyGroup) GetView() int64 {
+	if m != nil {
+		return m.View
+	}
+	return 0
+}
+
+func (m *CyGroup) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CyGroup) GetNodes() []int64 {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+func (m *CyGroup) GetExternalEdges() []int64 {
+	if m != nil {
+		return m.ExternalEdges
+	}
+	return nil
+}
+
+func (m *CyGroup) GetInternalEdges() []int64 {
+	if m != nil {
+		return m.InternalEdges
+	}
+	return nil
+}
+
+// aspect: cyViews
+// CyView represents a Cytoscape view.
+type CyView struct {
+	Id       int64 `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
+	SubnetId int64 `protobuf:"varint,2,opt,name=subnetId,json=s" json:"subnetId,omitempty"`
+}
+
+func (m *CyView) Reset()                    { *m = CyView{} }
+func (m *CyView) String() string            { return proto1.CompactTextString(m) }
+func (*CyView) ProtoMessage()               {}
+func (*CyView) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+
+func (m *CyView) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *CyView) GetSubnetId() int64 {
+	if m != nil {
+		return m.SubnetId
+	}
+	return 0
+}
+
+// aspect: cyVisualProperties
+// CyVisualProperty represents a Cytoscape visual property.
+type CyVisualProperty struct {
+	Owner        string            `protobuf:"bytes,1,opt,name=owner,json=properties_of" json:"owner,omitempty"`
+	OwnerId      int64             `protobuf:"varint,2,opt,name=ownerId,json=applies_to" json:"ownerId,omitempty"`
+	View         int64             `protobuf:"varint,4,opt,name=view" json:"view,omitempty"`
+	Properties   map[string]string `protobuf:"bytes,5,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Dependencies map[string]string `protobuf:"bytes,6,rep,name=dependencies" json:"dependencies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Mappings     map[string][]byte `protobuf:"bytes,7,rep,name=mappings" json:"mappings,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *CyVisualProperty) Reset()                    { *m = CyVisualProperty{} }
+func (m *CyVisualProperty) String() string            { return proto1.CompactTextString(m) }
+func (*CyVisualProperty) ProtoMessage()               {}
+func (*CyVisualProperty) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
+
+func (m *CyVisualProperty) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *CyVisualProperty) GetOwnerId() int64 {
+	if m != nil {
+		return m.OwnerId
+	}
+	return 0
+}
+
+func (m *CyVisualProperty) GetView() int64 {
+	if m != nil {
+		return m.View
+	}
+	return 0
+}
+
+func (m *CyVisualProperty) GetProperties() map[string]string {
+	if m != nil {
+		return m.Properties
+	}
+	return nil
+}
+
+func (m *CyVisualProperty) GetDependencies() map[string]string {
+	if m != nil {
+		return m.Dependencies
+	}
+	return nil
+}
+
+func (m *CyVisualProperty) GetMappings() map[string][]byte {
+	if m != nil {
+		return m.Mappings
+	}
+	return nil
+}
+
+// aspect: cyHiddenAttributes
+// CyHiddenAttribute represents a Cytoscape hidden attribute.
+type CyHiddenAttribute struct {
+	Name     string `protobuf:"bytes,1,opt,name=name,json=n" json:"name,omitempty"`
+	Value    string `protobuf:"bytes,2,opt,name=value,json=v" json:"value,omitempty"`
+	Type     string `protobuf:"bytes,3,opt,name=type,json=d" json:"type,omitempty"`
+	SubnetId int64  `protobuf:"varint,4,opt,name=subnetId,json=s" json:"subnetId,omitempty"`
+}
+
+func (m *CyHiddenAttribute) Reset()                    { *m = CyHiddenAttribute{} }
+func (m *CyHiddenAttribute) String() string            { return proto1.CompactTextString(m) }
+func (*CyHiddenAttribute) ProtoMessage()               {}
+func (*CyHiddenAttribute) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+
+func (m *CyHiddenAttribute) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CyHiddenAttribute) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+func (m *CyHiddenAttribute) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *CyHiddenAttribute) GetSubnetId() int64 {
+	if m != nil {
+		return m.SubnetId
+	}
+	return 0
+}
+
+// aspect: cyNetworkRelations
+// CyNetworkRelation represents a relationship between two Cytoscape networks.
+type CyNetworkRelation struct {
+	ParentId     int64  `protobuf:"varint,1,opt,name=parentId,json=p" json:"parentId,omitempty"`
+	ChildId      int64  `protobuf:"varint,2,opt,name=childId,json=c" json:"childId,omitempty"`
+	Relationship string `protobuf:"bytes,3,opt,name=relationship,json=r" json:"relationship,omitempty"`
+	Name         string `protobuf:"bytes,4,opt,name=name" json:"name,omitempty"`
+}
+
+func (m *CyNetworkRelation) Reset()                    { *m = CyNetworkRelation{} }
+func (m *CyNetworkRelation) String() string            { return proto1.CompactTextString(m) }
+func (*CyNetworkRelation) ProtoMessage()               {}
+func (*CyNetworkRelation) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+
+func (m *CyNetworkRelation) GetParentId() int64 {
+	if m != nil {
+		return m.ParentId
+	}
+	return 0
+}
+
+func (m *CyNetworkRelation) GetChildId() int64 {
+	if m != nil {
+		return m.ChildId
+	}
+	return 0
+}
+
+func (m *CyNetworkRelation) GetRelationship() string {
+	if m != nil {
+		return m.Relationship
+	}
+	return ""
+}
+
+func (m *CyNetworkRelation) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+// aspect: cySubNetworks
+// CySubNetwork represents a Cytoscape collection subnetwork.
+type CySubNetwork struct {
+	Id    int64   `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
+	Edges []int64 `protobuf:"varint,2,rep,packed,name=edges" json:"edges,omitempty"`
+	Nodes []int64 `protobuf:"varint,3,rep,packed,name=nodes" json:"nodes,omitempty"`
+}
+
+func (m *CySubNetwork) Reset()                    { *m = CySubNetwork{} }
+func (m *CySubNetwork) String() string            { return proto1.CompactTextString(m) }
+func (*CySubNetwork) ProtoMessage()               {}
+func (*CySubNetwork) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+
+func (m *CySubNetwork) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *CySubNetwork) GetEdges() []int64 {
+	if m != nil {
+		return m.Edges
+	}
+	return nil
+}
+
+func (m *CySubNetwork) GetNodes() []int64 {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+// aspect: cyTableColumns
+// CyTableColumn represents a Cytoscape column.
+type CyTableColumn struct {
+	Name     string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Type     string `protobuf:"bytes,2,opt,name=type" json:"type,omitempty"`
+	Owner    string `protobuf:"bytes,3,opt,name=owner" json:"owner,omitempty"`
+	SubnetId int64  `protobuf:"varint,4,opt,name=subnetId,json=applies_to" json:"subnetId,omitempty"`
+}
+
+func (m *CyTableColumn) Reset()                    { *m = CyTableColumn{} }
+func (m *CyTableColumn) String() string            { return proto1.CompactTextString(m) }
+func (*CyTableColumn) ProtoMessage()               {}
+func (*CyTableColumn) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+
+func (m *CyTableColumn) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CyTableColumn) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *CyTableColumn) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *CyTableColumn) GetSubnetId() int64 {
+	if m != nil {
+		return m.SubnetId
+	}
+	return 0
+}
+
+// aspect: ndexStatus
+// NdexStatus represents the status of a network on an NDEx server.
+type NdexStatus struct {
+	Id           string `protobuf:"bytes,1,opt,name=id,json=externalId" json:"id,omitempty"`
+	Location     string `protobuf:"bytes,2,opt,name=location,json=ndexServerURI" json:"location,omitempty"`
+	Owner        string `protobuf:"bytes,3,opt,name=owner" json:"owner,omitempty"`
+	CreationTime string `protobuf:"bytes,4,opt,name=creationTime" json:"creationTime,omitempty"`
+	ReadOnly     bool   `protobuf:"varint,5,opt,name=readOnly" json:"readOnly,omitempty"`
+	Visibility   string `protobuf:"bytes,6,opt,name=visibility" json:"visibility,omitempty"`
+	EdgeCount    int64  `protobuf:"varint,7,opt,name=edgeCount" json:"edgeCount,omitempty"`
+	NodeCount    int64  `protobuf:"varint,8,opt,name=nodeCount" json:"nodeCount,omitempty"`
+}
+
+func (m *NdexStatus) Reset()                    { *m = NdexStatus{} }
+func (m *NdexStatus) String() string            { return proto1.CompactTextString(m) }
+func (*NdexStatus) ProtoMessage()               {}
+func (*NdexStatus) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+
+func (m *NdexStatus) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *NdexStatus) GetLocation() string {
+	if m != nil {
+		return m.Location
+	}
+	return ""
+}
+
+func (m *NdexStatus) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *NdexStatus) GetCreationTime() string {
+	if m != nil {
+		return m.CreationTime
+	}
+	return ""
+}
+
+func (m *NdexStatus) GetReadOnly() bool {
+	if m != nil {
+		return m.ReadOnly
+	}
+	return false
+}
+
+func (m *NdexStatus) GetVisibility() string {
+	if m != nil {
+		return m.Visibility
+	}
+	return ""
+}
+
+func (m *NdexStatus) GetEdgeCount() int64 {
+	if m != nil {
+		return m.EdgeCount
+	}
+	return 0
+}
+
+func (m *NdexStatus) GetNodeCount() int64 {
+	if m != nil {
+		return m.NodeCount
+	}
+	return 0
+}
+
+// aspect: citations
+// Citation specifies a literature reference to a network.
+type Citation struct {
+	Id          string               `protobuf:"bytes,1,opt,name=id,json=@id" json:"id,omitempty"`
+	Title       string               `protobuf:"bytes,2,opt,name=title,json=dc:title" json:"title,omitempty"`
+	Description string               `protobuf:"bytes,3,opt,name=description,json=dc:description" json:"description,omitempty"`
+	Contributor string               `protobuf:"bytes,4,opt,name=contributor,json=dc:contributor" json:"contributor,omitempty"`
+	Identifier  string               `protobuf:"bytes,5,opt,name=identifier,json=dc:identifier" json:"identifier,omitempty"`
+	Type        string               `protobuf:"bytes,6,opt,name=type,json=dc:type" json:"type,omitempty"`
+	Attributes  []*CitationAttribute `protobuf:"bytes,7,rep,name=attributes" json:"attributes,omitempty"`
+}
+
+func (m *Citation) Reset()                    { *m = Citation{} }
+func (m *Citation) String() string            { return proto1.CompactTextString(m) }
+func (*Citation) ProtoMessage()               {}
+func (*Citation) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+
+func (m *Citation) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Citation) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *Citation) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *Citation) GetContributor() string {
+	if m != nil {
+		return m.Contributor
+	}
+	return ""
+}
+
+func (m *Citation) GetIdentifier() string {
+	if m != nil {
+		return m.Identifier
+	}
+	return ""
+}
+
+func (m *Citation) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *Citation) GetAttributes() []*CitationAttribute {
+	if m != nil {
+		return m.Attributes
+	}
+	return nil
+}
+
+// CitationAttribute holds an attribute of a citation.
+type CitationAttribute struct {
+	Name  string `protobuf:"bytes,1,opt,name=name,json=n" json:"name,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,json=v" json:"value,omitempty"`
+	Type  string `protobuf:"bytes,3,opt,name=type,json=t" json:"type,omitempty"`
+}
+
+func (m *CitationAttribute) Reset()                    { *m = CitationAttribute{} }
+func (m *CitationAttribute) String() string            { return proto1.CompactTextString(m) }
+func (*CitationAttribute) ProtoMessage()               {}
+func (*CitationAttribute) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+
+func (m *CitationAttribute) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CitationAttribute) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+func (m *CitationAttribute) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+// aspect: nodeCitations
+// NodeCitations creates a series of nodes to citations mappings.
+type NodeCitations struct {
+	Nodes     []int64 `protobuf:"varint,1,rep,packed,name=nodes,json=citations" json:"nodes,omitempty"`
+	Citations []int64 `protobuf:"varint,2,rep,packed,name=citations,json=po" json:"citations,omitempty"`
+}
+
+func (m *NodeCitations) Reset()                    { *m = NodeCitations{} }
+func (m *NodeCitations) String() string            { return proto1.CompactTextString(m) }
+func (*NodeCitations) ProtoMessage()               {}
+func (*NodeCitations) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
+
+func (m *NodeCitations) GetNodes() []int64 {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+func (m *NodeCitations) GetCitations() []int64 {
+	if m != nil {
+		return m.Citations
+	}
+	return nil
+}
+
+// aspect: edgeCitations
+// EdgeCitations creates a series of edges to citations mappings.
+type EdgeCitations struct {
+	Edges     []int64 `protobuf:"varint,1,rep,packed,name=edges,json=citations" json:"edges,omitempty"`
+	Citations []int64 `protobuf:"varint,2,rep,packed,name=citations,json=po" json:"citations,omitempty"`
+}
+
+func (m *EdgeCitations) Reset()                    { *m = EdgeCitations{} }
+func (m *EdgeCitations) String() string            { return proto1.CompactTextString(m) }
+func (*EdgeCitations) ProtoMessage()               {}
+func (*EdgeCitations) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
+
+func (m *EdgeCitations) GetEdges() []int64 {
+	if m != nil {
+		return m.Edges
+	}
+	return nil
+}
+
+func (m *EdgeCitations) GetCitations() []int64 {
+	if m != nil {
+		return m.Citations
+	}
+	return nil
+}
+
+// aspect: supports
+// Support specifies text that can support one or more nodes or edges in a network.
+type Support struct {
+	Id         int64               `protobuf:"varint,1,opt,name=id,json=@id" json:"id,omitempty"`
+	CitationId int64               `protobuf:"varint,2,opt,name=citationId,json=citation" json:"citationId,omitempty"`
+	Text       string              `protobuf:"bytes,3,opt,name=text" json:"text,omitempty"`
+	Attributes []*SupportAttribute `protobuf:"bytes,4,rep,name=attributes" json:"attributes,omitempty"`
+}
+
+func (m *Support) Reset()                    { *m = Support{} }
+func (m *Support) String() string            { return proto1.CompactTextString(m) }
+func (*Support) ProtoMessage()               {}
+func (*Support) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
+
+func (m *Support) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Support) GetCitationId() int64 {
+	if m != nil {
+		return m.CitationId
+	}
+	return 0
+}
+
+func (m *Support) GetText() string {
+	if m != nil {
+		return m.Text
+	}
+	return ""
+}
+
+func (m *Support) GetAttributes() []*SupportAttribute {
+	if m != nil {
+		return m.Attributes
+	}
+	return nil
+}
+
+// SupportAttribute holds an attribute of a supportant.
+type SupportAttribute struct {
+	Name  string `protobuf:"bytes,1,opt,name=name,json=n" json:"name,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,json=v" json:"value,omitempty"`
+	Type  string `protobuf:"bytes,3,opt,name=type,json=t" json:"type,omitempty"`
+}
+
+func (m *SupportAttribute) Reset()                    { *m = SupportAttribute{} }
+func (m *SupportAttribute) String() string            { return proto1.CompactTextString(m) }
+func (*SupportAttribute) ProtoMessage()               {}
+func (*SupportAttribute) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
+
+func (m *SupportAttribute) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *SupportAttribute) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+func (m *SupportAttribute) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+// aspect: nodeSupports
+// NodeSupportance provides supportance for a series of nodes.
+type NodeSupportance struct {
+	Nodes       []int64 `protobuf:"varint,1,rep,packed,name=nodes" json:"nodes,omitempty"`
+	Supportance []int64 `protobuf:"varint,2,rep,packed,name=supportance,json=po" json:"supportance,omitempty"`
+}
+
+func (m *NodeSupportance) Reset()                    { *m = NodeSupportance{} }
+func (m *NodeSupportance) String() string            { return proto1.CompactTextString(m) }
+func (*NodeSupportance) ProtoMessage()               {}
+func (*NodeSupportance) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
+
+func (m *NodeSupportance) GetNodes() []int64 {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+func (m *NodeSupportance) GetSupportance() []int64 {
+	if m != nil {
+		return m.Supportance
+	}
+	return nil
+}
+
+// aspect: edgeSupports
+// EdgeSupportance provides supportance for a series of edges.
+type EdgeSupportance struct {
+	Edges       []int64 `protobuf:"varint,1,rep,packed,name=edges" json:"edges,omitempty"`
+	Supportance []int64 `protobuf:"varint,2,rep,packed,name=supportance,json=po" json:"supportance,omitempty"`
+}
+
+func (m *EdgeSupportance) Reset()                    { *m = EdgeSupportance{} }
+func (m *EdgeSupportance) String() string            { return proto1.CompactTextString(m) }
+func (*EdgeSupportance) ProtoMessage()               {}
+func (*EdgeSupportance) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
+
+func (m *EdgeSupportance) GetEdges() []int64 {
+	if m != nil {
+		return m.Edges
+	}
+	return nil
+}
+
+func (m *EdgeSupportance) GetSupportance() []int64 {
+	if m != nil {
+		return m.Supportance
+	}
+	return nil
+}
+
+// aspect: functionTerms
+// FuntionTerm link nodes with expressions that define the meaning of the node.
+type FunctionTerm struct {
+	NodeId    int64    `protobuf:"varint,1,opt,name=nodeId,json=po" json:"nodeId,omitempty"`
+	Function  string   `protobuf:"bytes,2,opt,name=function,json=f" json:"function,omitempty"`
+	Arguments []string `protobuf:"bytes,3,rep,name=arguments,json=args" json:"arguments,omitempty"`
+}
+
+func (m *FunctionTerm) Reset()                    { *m = FunctionTerm{} }
+func (m *FunctionTerm) String() string            { return proto1.CompactTextString(m) }
+func (*FunctionTerm) ProtoMessage()               {}
+func (*FunctionTerm) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
+
+func (m *FunctionTerm) GetNodeId() int64 {
+	if m != nil {
+		return m.NodeId
+	}
+	return 0
+}
+
+func (m *FunctionTerm) GetFunction() string {
+	if m != nil {
+		return m.Function
+	}
+	return ""
+}
+
+func (m *FunctionTerm) GetArguments() []string {
+	if m != nil {
+		return m.Arguments
+	}
+	return nil
+}
+
+// reifiedEdges: reifiedEdges
+// ReifiedEdge logically turns a node into an edge.
+type ReifiedEdge struct {
+	EdgeId int64 `protobuf:"varint,1,opt,name=edgeId,json=edge" json:"edgeId,omitempty"`
+	NodeId int64 `protobuf:"varint,2,opt,name=nodeId,json=node" json:"nodeId,omitempty"`
+}
+
+func (m *ReifiedEdge) Reset()                    { *m = ReifiedEdge{} }
+func (m *ReifiedEdge) String() string            { return proto1.CompactTextString(m) }
+func (*ReifiedEdge) ProtoMessage()               {}
+func (*ReifiedEdge) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
+
+func (m *ReifiedEdge) GetEdgeId() int64 {
+	if m != nil {
+		return m.EdgeId
+	}
+	return 0
+}
+
+func (m *ReifiedEdge) GetNodeId() int64 {
+	if m != nil {
+		return m.NodeId
 	}
 	return 0
 }
@@ -862,7 +2087,25 @@ func init() {
 	proto1.RegisterType((*NodeAttribute)(nil), "proto.NodeAttribute")
 	proto1.RegisterType((*EdgeAttribute)(nil), "proto.EdgeAttribute")
 	proto1.RegisterType((*NetworkAttribute)(nil), "proto.NetworkAttribute")
-	proto1.RegisterType((*CartesianLayout)(nil), "proto.CartesianLayout")
+	proto1.RegisterType((*CartesianCoordinate)(nil), "proto.CartesianCoordinate")
+	proto1.RegisterType((*CyGroup)(nil), "proto.CyGroup")
+	proto1.RegisterType((*CyView)(nil), "proto.CyView")
+	proto1.RegisterType((*CyVisualProperty)(nil), "proto.CyVisualProperty")
+	proto1.RegisterType((*CyHiddenAttribute)(nil), "proto.CyHiddenAttribute")
+	proto1.RegisterType((*CyNetworkRelation)(nil), "proto.CyNetworkRelation")
+	proto1.RegisterType((*CySubNetwork)(nil), "proto.CySubNetwork")
+	proto1.RegisterType((*CyTableColumn)(nil), "proto.CyTableColumn")
+	proto1.RegisterType((*NdexStatus)(nil), "proto.NdexStatus")
+	proto1.RegisterType((*Citation)(nil), "proto.Citation")
+	proto1.RegisterType((*CitationAttribute)(nil), "proto.CitationAttribute")
+	proto1.RegisterType((*NodeCitations)(nil), "proto.NodeCitations")
+	proto1.RegisterType((*EdgeCitations)(nil), "proto.EdgeCitations")
+	proto1.RegisterType((*Support)(nil), "proto.Support")
+	proto1.RegisterType((*SupportAttribute)(nil), "proto.SupportAttribute")
+	proto1.RegisterType((*NodeSupportance)(nil), "proto.NodeSupportance")
+	proto1.RegisterType((*EdgeSupportance)(nil), "proto.EdgeSupportance")
+	proto1.RegisterType((*FunctionTerm)(nil), "proto.FunctionTerm")
+	proto1.RegisterType((*ReifiedEdge)(nil), "proto.ReifiedEdge")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -876,8 +2119,7 @@ const _ = grpc.SupportPackageIsVersion4
 // Client API for CxMateService service
 
 type CxMateServiceClient interface {
-	// StreamElements allows cxMate to stream one or more networks to a service
-	// which can then stream one or more networks back.
+	// StreamNetworks transfers one or more networks to and from the service.
 	StreamNetworks(ctx context.Context, opts ...grpc.CallOption) (CxMateService_StreamNetworksClient, error)
 }
 
@@ -923,8 +2165,7 @@ func (x *cxMateServiceStreamNetworksClient) Recv() (*NetworkElement, error) {
 // Server API for CxMateService service
 
 type CxMateServiceServer interface {
-	// StreamElements allows cxMate to stream one or more networks to a service
-	// which can then stream one or more networks back.
+	// StreamNetworks transfers one or more networks to and from the service.
 	StreamNetworks(CxMateService_StreamNetworksServer) error
 }
 
@@ -976,47 +2217,112 @@ var _CxMateService_serviceDesc = grpc.ServiceDesc{
 func init() { proto1.RegisterFile("cxmate.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 657 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0x4d, 0x6f, 0xdb, 0x3c,
-	0x0c, 0xc7, 0xad, 0x38, 0x2f, 0x35, 0x93, 0x36, 0x81, 0x9e, 0xb6, 0x8f, 0xb1, 0x53, 0x67, 0xf4,
-	0xd0, 0x53, 0x51, 0x74, 0xd7, 0x01, 0xdb, 0xba, 0x05, 0x70, 0x81, 0xad, 0x18, 0x54, 0x6c, 0xc0,
-	0xb0, 0x93, 0x12, 0x73, 0x81, 0xd1, 0x58, 0x0e, 0x64, 0x39, 0x4d, 0xfa, 0x39, 0x87, 0x7d, 0x9e,
-	0x81, 0xb2, 0x9c, 0xc6, 0x49, 0xaf, 0x3b, 0x45, 0x24, 0xff, 0xfc, 0x91, 0x12, 0x19, 0xc3, 0x60,
-	0xba, 0xca, 0xa4, 0xc1, 0xcb, 0x85, 0xce, 0x4d, 0xce, 0x3b, 0xf6, 0x27, 0xfa, 0xe3, 0xc3, 0xd1,
-	0x1d, 0x9a, 0xc7, 0x5c, 0x3f, 0x8c, 0xe7, 0x98, 0xa1, 0x32, 0xfc, 0x18, 0x3a, 0x73, 0x39, 0xc1,
-	0x79, 0xc8, 0xce, 0xd8, 0x45, 0x20, 0x2a, 0x83, 0x5f, 0x41, 0xb0, 0x90, 0x5a, 0x66, 0x68, 0x50,
-	0x87, 0xad, 0x33, 0x76, 0xd1, 0xbf, 0x1e, 0x55, 0xa8, 0xcb, 0xaf, 0xb5, 0x3f, 0xf6, 0xc4, 0xb3,
-	0x88, 0x9f, 0x43, 0x07, 0xb5, 0xce, 0x75, 0xe8, 0x5b, 0xf5, 0xc0, 0xa9, 0xc7, 0xe4, 0x8b, 0x3d,
-	0x51, 0x05, 0xf9, 0x6b, 0x68, 0xab, 0x3c, 0xc1, 0xb0, 0x6d, 0x45, 0x7d, 0x27, 0xba, 0xcb, 0x13,
-	0x8c, 0x3d, 0x61, 0x43, 0x24, 0xc1, 0x64, 0x86, 0x61, 0xa7, 0x21, 0x19, 0x27, 0x33, 0x2b, 0xa1,
-	0x10, 0x7f, 0x0b, 0x87, 0x24, 0xfd, 0x60, 0x8c, 0x4e, 0x27, 0xa5, 0xc1, 0xb0, 0x6b, 0xb5, 0xc7,
-	0x5b, 0xb8, 0x4d, 0x2c, 0xf6, 0x44, 0x53, 0x4c, 0xd9, 0x44, 0x79, 0xce, 0xee, 0x35, 0xb2, 0xc7,
-	0xdb, 0x31, 0xca, 0x6e, 0x88, 0xf9, 0x18, 0x46, 0xaa, 0x7a, 0xc1, 0x67, 0xc0, 0x81, 0x05, 0xfc,
-	0x5f, 0x97, 0xdf, 0x09, 0xc7, 0x9e, 0xd8, 0x4b, 0xe1, 0x37, 0x30, 0x9c, 0x4a, 0x6d, 0xb0, 0x48,
-	0xa5, 0xfa, 0x2c, 0xd7, 0x79, 0x69, 0xc2, 0xc0, 0x52, 0x4e, 0x1d, 0xe5, 0x63, 0x33, 0x1a, 0x7b,
-	0x62, 0x37, 0xe1, 0x26, 0x80, 0x1e, 0x56, 0x53, 0x8c, 0x7e, 0x33, 0x08, 0x36, 0x83, 0xe1, 0x1c,
-	0xda, 0x4a, 0x66, 0xe8, 0x46, 0x6a, 0xcf, 0xfc, 0x14, 0xba, 0xbf, 0x72, 0x9d, 0x49, 0x63, 0xc7,
-	0x19, 0x08, 0x67, 0xf1, 0x08, 0xfa, 0x85, 0xd1, 0xa9, 0x9a, 0x7d, 0x97, 0xf3, 0x12, 0xed, 0xf4,
-	0x82, 0xd8, 0x13, 0xdb, 0x4e, 0x7e, 0x0e, 0x83, 0x49, 0x9e, 0xcf, 0x51, 0xaa, 0x4a, 0x44, 0xd3,
-	0x3b, 0x88, 0x3d, 0xd1, 0xf0, 0x92, 0x2a, 0x55, 0x06, 0x67, 0xa8, 0x2b, 0x15, 0x0d, 0xd0, 0x27,
-	0xd5, 0xb6, 0x97, 0xea, 0xa9, 0x32, 0x9b, 0xd4, 0x22, 0x9a, 0x1c, 0xa3, 0x7a, 0x5b, 0xce, 0x9b,
-	0x1e, 0x74, 0x96, 0x74, 0x88, 0x24, 0x74, 0xec, 0x02, 0x51, 0xf7, 0x85, 0x91, 0xa6, 0x2c, 0xec,
-	0x9d, 0x7c, 0xe1, 0x2c, 0xba, 0xa9, 0x59, 0x2f, 0xd0, 0xdd, 0xc9, 0x9e, 0x79, 0x08, 0xbd, 0x0c,
-	0x8b, 0x42, 0xce, 0xdc, 0x6d, 0x44, 0x6d, 0x92, 0x7a, 0x9e, 0xaa, 0x07, 0xdb, 0x7f, 0x20, 0xec,
-	0x39, 0x7a, 0x07, 0x6d, 0xda, 0x17, 0x3e, 0x84, 0x56, 0x9a, 0x38, 0xba, 0xff, 0x3e, 0x4d, 0xf8,
-	0xd0, 0x3d, 0x62, 0x85, 0x66, 0x8a, 0x9f, 0x00, 0x68, 0x5c, 0x68, 0x2c, 0x50, 0x99, 0xc2, 0xa1,
-	0x99, 0x8e, 0x7e, 0x40, 0x9b, 0x56, 0x66, 0x1f, 0xf0, 0x1f, 0x1c, 0x14, 0x79, 0xa9, 0xa7, 0x78,
-	0x9b, 0x58, 0x88, 0x2f, 0x58, 0x41, 0x4e, 0x23, 0xf5, 0x0c, 0xcd, 0x6d, 0x62, 0x11, 0xbe, 0x60,
-	0x86, 0x9f, 0x42, 0x9f, 0xde, 0x48, 0xcb, 0xa9, 0x49, 0x73, 0xe5, 0xda, 0x63, 0x69, 0x34, 0x87,
-	0xc3, 0xc6, 0x2e, 0x73, 0x0e, 0x5d, 0xda, 0xe5, 0xdb, 0xba, 0x4e, 0x6b, 0x91, 0xef, 0xf7, 0x39,
-	0x72, 0xaf, 0x57, 0xb7, 0xb8, 0x24, 0x89, 0x7d, 0x25, 0x07, 0xae, 0x5a, 0x2b, 0x27, 0xca, 0x76,
-	0xd1, 0x71, 0xad, 0x51, 0xb5, 0xc6, 0xee, 0x53, 0x35, 0xda, 0xfd, 0x7f, 0x53, 0xed, 0x27, 0x8c,
-	0x76, 0xff, 0x28, 0x1b, 0x38, 0xdb, 0x83, 0xb7, 0x76, 0xe1, 0xfe, 0x4b, 0xf0, 0x76, 0x0d, 0x9f,
-	0xc1, 0x70, 0xe7, 0xff, 0xc3, 0x8f, 0x77, 0x9e, 0xae, 0xfa, 0xd8, 0x0c, 0x80, 0xad, 0x2c, 0x9c,
-	0x09, 0xb6, 0x22, 0x6b, 0x6d, 0xc9, 0x4c, 0xb0, 0x35, 0x59, 0x4f, 0x16, 0xc9, 0x04, 0x7b, 0xa2,
-	0xfc, 0x65, 0x8a, 0x8f, 0x9b, 0x2b, 0xb4, 0xc9, 0xba, 0xfe, 0x06, 0x87, 0xd3, 0xd5, 0x17, 0x69,
-	0xf0, 0x1e, 0xf5, 0x32, 0x9d, 0x22, 0xff, 0x04, 0x47, 0xf7, 0x46, 0xa3, 0xcc, 0xdc, 0xe5, 0x0a,
-	0x7e, 0xd2, 0xfc, 0x2c, 0xb8, 0xef, 0xee, 0xab, 0x97, 0xdd, 0x91, 0x77, 0xc1, 0xae, 0xd8, 0xa4,
-	0x6b, 0x63, 0x6f, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0xe4, 0x93, 0xd8, 0x0f, 0xc5, 0x05, 0x00,
-	0x00,
+	// 1703 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x58, 0xdd, 0x6e, 0xdb, 0xca,
+	0x11, 0x16, 0xf5, 0x63, 0x49, 0x23, 0xc9, 0x92, 0xd7, 0x7f, 0xac, 0x6b, 0xb4, 0x39, 0x6c, 0x0e,
+	0x8e, 0x5b, 0xa0, 0xc6, 0x81, 0x0f, 0xd0, 0x9e, 0xb8, 0x2d, 0xf2, 0xe3, 0x38, 0xa1, 0x51, 0x24,
+	0x35, 0xd6, 0x49, 0x80, 0xa2, 0x05, 0x02, 0x8a, 0x5c, 0x2b, 0x84, 0x29, 0x92, 0x58, 0xae, 0x6c,
+	0x2b, 0xf7, 0x7d, 0x81, 0xbe, 0x43, 0xdf, 0xa8, 0x4f, 0xd2, 0x9b, 0xa2, 0x77, 0xc5, 0xec, 0x2e,
+	0xc9, 0x25, 0x25, 0xa3, 0x6d, 0xd0, 0x73, 0x25, 0xee, 0xcc, 0x37, 0xdf, 0xee, 0x0c, 0x67, 0x66,
+	0x87, 0x82, 0xa1, 0x7f, 0x3f, 0xf7, 0x04, 0x3b, 0x4e, 0x79, 0x22, 0x12, 0xd2, 0x91, 0x3f, 0xce,
+	0x5f, 0x07, 0xb0, 0xf9, 0x96, 0x89, 0xbb, 0x84, 0xdf, 0x9c, 0x47, 0x6c, 0xce, 0x62, 0x41, 0x76,
+	0xa0, 0x13, 0x79, 0x53, 0x16, 0xd9, 0xd6, 0x23, 0xeb, 0xa8, 0x4f, 0xd5, 0x82, 0x7c, 0x0b, 0xfd,
+	0xd4, 0xe3, 0xde, 0x9c, 0x09, 0xc6, 0xed, 0xe6, 0x23, 0xeb, 0x68, 0x70, 0x32, 0x51, 0x54, 0xc7,
+	0x97, 0xb9, 0xdc, 0x6d, 0xd0, 0x12, 0x44, 0x1e, 0x43, 0x87, 0x71, 0x9e, 0x70, 0xbb, 0x25, 0xd1,
+	0x43, 0x8d, 0x3e, 0x47, 0x99, 0xdb, 0xa0, 0x4a, 0x49, 0xbe, 0x82, 0x76, 0x9c, 0x04, 0xcc, 0x6e,
+	0x4b, 0xd0, 0x40, 0x83, 0xde, 0x26, 0x01, 0x73, 0x1b, 0x54, 0xaa, 0x10, 0xc2, 0x82, 0x19, 0xb3,
+	0x3b, 0x15, 0xc8, 0x79, 0x30, 0x93, 0x10, 0x54, 0x91, 0xdf, 0xc2, 0x08, 0xa1, 0xcf, 0x85, 0xe0,
+	0xe1, 0x74, 0x21, 0x98, 0xbd, 0x21, 0xb1, 0x3b, 0x06, 0x5d, 0xa1, 0x73, 0x1b, 0xb4, 0x0a, 0x46,
+	0x6b, 0x64, 0x29, 0xad, 0xbb, 0x15, 0xeb, 0x73, 0x53, 0x87, 0xd6, 0x15, 0x30, 0x39, 0x87, 0x49,
+	0xac, 0x22, 0x58, 0x12, 0xf4, 0x24, 0xc1, 0x7e, 0xbe, 0x7d, 0x4d, 0xed, 0x36, 0xe8, 0x8a, 0x09,
+	0x79, 0x0b, 0xdb, 0x67, 0x1e, 0x17, 0x2c, 0x0b, 0xbd, 0xf8, 0x2c, 0x49, 0x78, 0x10, 0xc6, 0x9e,
+	0x60, 0x76, 0x5f, 0x32, 0x1d, 0x68, 0xa6, 0x35, 0x08, 0xb7, 0x41, 0xd7, 0x19, 0x92, 0x5f, 0x40,
+	0xd7, 0x5f, 0xbe, 0xe6, 0xc9, 0x22, 0xb5, 0x41, 0x72, 0x6c, 0xe6, 0x1c, 0x4a, 0xea, 0x36, 0x68,
+	0x0e, 0x20, 0xdf, 0xc0, 0x86, 0xbf, 0xfc, 0x10, 0xb2, 0x3b, 0x7b, 0x20, 0xa1, 0xa3, 0x02, 0x8a,
+	0x42, 0xb7, 0x41, 0xb5, 0x1a, 0x7d, 0xc5, 0xa7, 0x6c, 0xe1, 0x45, 0x97, 0x3c, 0x49, 0x19, 0x17,
+	0x4b, 0x7b, 0x58, 0xf1, 0xf5, 0xac, 0xa6, 0x46, 0x5f, 0xeb, 0x26, 0xc4, 0x85, 0x2d, 0x7f, 0xe9,
+	0x86, 0x41, 0xc0, 0xe2, 0x32, 0x66, 0x23, 0xc9, 0x63, 0x17, 0x3c, 0x35, 0xbd, 0xdb, 0xa0, 0xab,
+	0x46, 0x8a, 0x49, 0xc7, 0x97, 0xb2, 0xc8, 0x13, 0x61, 0x12, 0xdb, 0x9b, 0x35, 0xa6, 0x9a, 0x5e,
+	0x31, 0xd5, 0x84, 0xe4, 0x09, 0x0c, 0xfd, 0xe5, 0xd5, 0x62, 0xaa, 0xe5, 0xf6, 0x58, 0x92, 0x6c,
+	0x17, 0x24, 0xa5, 0xca, 0x6d, 0xd0, 0x0a, 0x14, 0xf3, 0xc7, 0x5f, 0xbe, 0xf3, 0xa6, 0x11, 0x3b,
+	0x4b, 0xa2, 0xc5, 0x3c, 0xb6, 0x27, 0x95, 0xfc, 0x39, 0x33, 0x75, 0x98, 0x3f, 0x15, 0x30, 0xf9,
+	0x0e, 0x20, 0x0e, 0xd8, 0xfd, 0x95, 0xf0, 0xc4, 0x22, 0xb3, 0xb7, 0xa4, 0xe9, 0x56, 0x9e, 0x39,
+	0x85, 0xc2, 0x6d, 0x50, 0x03, 0x46, 0x7e, 0x09, 0x3d, 0x3f, 0x14, 0xca, 0x5d, 0x22, 0x4d, 0xc6,
+	0xf9, 0x6e, 0x5a, 0xec, 0x36, 0x68, 0x01, 0xc9, 0xeb, 0x23, 0xd7, 0x65, 0xf6, 0xf6, 0x4a, 0x7d,
+	0x14, 0xba, 0xbc, 0x3e, 0x0a, 0x41, 0x5e, 0x1f, 0xa5, 0xf5, 0xce, 0x4a, 0x7d, 0x54, 0xac, 0x2b,
+	0x60, 0x4c, 0xc4, 0x6c, 0x91, 0xa6, 0x09, 0x17, 0xf6, 0x6e, 0x25, 0x11, 0xaf, 0x94, 0x14, 0x13,
+	0x51, 0x03, 0xc8, 0x0b, 0x18, 0xe3, 0xd6, 0x5a, 0xe3, 0xc5, 0x3e, 0xb3, 0xf7, 0xa4, 0xcd, 0x9e,
+	0x71, 0x52, 0x43, 0xeb, 0x36, 0x68, 0xdd, 0x00, 0x39, 0xf0, 0x00, 0x26, 0xc7, 0x7e, 0x85, 0xe3,
+	0xbc, 0xaa, 0x45, 0x8e, 0x9a, 0x01, 0x26, 0xc3, 0xf5, 0x22, 0xf6, 0xd1, 0x81, 0x77, 0x8c, 0xcf,
+	0x6d, 0xbb, 0x92, 0x0c, 0xaf, 0x0c, 0x15, 0x26, 0x83, 0x09, 0x25, 0xbf, 0x82, 0x01, 0x67, 0xe1,
+	0x75, 0xc8, 0x02, 0xdc, 0xc7, 0xfe, 0x91, 0xb4, 0x24, 0xda, 0x92, 0x96, 0x1a, 0xb7, 0x41, 0x4d,
+	0xe0, 0x8b, 0x3e, 0x74, 0x99, 0xea, 0xc0, 0xce, 0xdf, 0x2d, 0xe8, 0x17, 0x4d, 0x95, 0x10, 0x68,
+	0xc7, 0xde, 0x9c, 0xe9, 0x76, 0x2c, 0x9f, 0xc9, 0x1e, 0x6c, 0x5c, 0x27, 0x7c, 0xee, 0x09, 0xd9,
+	0x8a, 0xfb, 0x54, 0xaf, 0x88, 0x03, 0x83, 0x4c, 0xf0, 0x30, 0x9e, 0x7d, 0xf0, 0xa2, 0x05, 0x93,
+	0x9d, 0xb7, 0x8f, 0x1b, 0x19, 0x42, 0xf2, 0x18, 0x86, 0xd3, 0x24, 0x89, 0x98, 0x17, 0x2b, 0x10,
+	0x76, 0xde, 0x1e, 0xba, 0x61, 0x4a, 0x11, 0x15, 0xc6, 0x82, 0xcd, 0x18, 0x57, 0x28, 0x6c, 0xbe,
+	0x2d, 0x44, 0x99, 0x52, 0xdc, 0x2f, 0x5e, 0xcc, 0xa7, 0x39, 0x08, 0xbb, 0xae, 0x85, 0xfb, 0x19,
+	0xc2, 0x17, 0x5d, 0xe8, 0xdc, 0xe2, 0x83, 0xe3, 0x41, 0x47, 0x36, 0x7f, 0x3c, 0x7d, 0xa6, 0xb2,
+	0x1d, 0x7d, 0x6a, 0x51, 0xbd, 0x42, 0x4f, 0xc5, 0x32, 0x65, 0xda, 0x27, 0xf9, 0x4c, 0x6c, 0xe8,
+	0xce, 0x59, 0x96, 0x79, 0x33, 0xed, 0x0d, 0xcd, 0x97, 0x88, 0x8e, 0xc2, 0xf8, 0x46, 0x9e, 0xbf,
+	0x4f, 0xe5, 0xb3, 0xf3, 0x14, 0xda, 0x98, 0x21, 0x64, 0x0c, 0xcd, 0x30, 0xd0, 0xec, 0xad, 0x67,
+	0x61, 0x40, 0xc6, 0x3a, 0x88, 0x8a, 0xda, 0x8a, 0xc9, 0x2e, 0x00, 0x67, 0x29, 0x67, 0x19, 0x8b,
+	0x45, 0xa6, 0xa9, 0x2d, 0xee, 0xfc, 0x11, 0xda, 0xf8, 0x36, 0x56, 0x09, 0xb6, 0xa1, 0x97, 0x25,
+	0x0b, 0xee, 0xb3, 0x8b, 0x40, 0x92, 0xb4, 0xa8, 0x95, 0xa1, 0x50, 0x78, 0x7c, 0xc6, 0xc4, 0x45,
+	0x20, 0x29, 0x5a, 0xd4, 0x12, 0x64, 0x0f, 0x06, 0x18, 0x23, 0xee, 0xc9, 0x9c, 0xd0, 0xc7, 0xb3,
+	0x42, 0x27, 0x82, 0x51, 0xe5, 0x1e, 0x22, 0x04, 0x36, 0x30, 0x77, 0x2f, 0xf2, 0x7d, 0x9a, 0x69,
+	0xb2, 0x7a, 0xce, 0x89, 0x8e, 0x5e, 0x7e, 0xc4, 0x5b, 0x84, 0xc8, 0x28, 0x69, 0x62, 0x75, 0xb4,
+	0xc5, 0x34, 0x96, 0xa7, 0xe8, 0xe8, 0xa3, 0xe1, 0x6e, 0x95, 0x7b, 0x0b, 0x77, 0xc3, 0x2c, 0xff,
+	0x61, 0x76, 0xfb, 0x13, 0x4c, 0xea, 0x97, 0x5c, 0x41, 0x6e, 0xad, 0x90, 0x37, 0xeb, 0xe4, 0xad,
+	0x75, 0xe4, 0xed, 0x9c, 0xfc, 0x66, 0xed, 0xcd, 0x48, 0x76, 0x6a, 0xe1, 0x53, 0xc3, 0xc2, 0x10,
+	0xac, 0x7b, 0xb9, 0x81, 0x45, 0xad, 0x7b, 0x5c, 0x2d, 0x25, 0xbb, 0x45, 0xad, 0x25, 0xae, 0x3e,
+	0x4b, 0x5a, 0x8b, 0x5a, 0x9f, 0xd1, 0xfe, 0x36, 0x64, 0x77, 0x85, 0x1b, 0x6d, 0x5c, 0x39, 0x7f,
+	0xb3, 0xa0, 0xab, 0x6f, 0xc8, 0xd5, 0x24, 0x20, 0x20, 0x41, 0x3a, 0x01, 0xe4, 0x73, 0x51, 0x9e,
+	0x2d, 0xa3, 0x3c, 0x77, 0xa0, 0x83, 0x87, 0xc9, 0xec, 0xf6, 0xa3, 0xd6, 0x51, 0x8b, 0xaa, 0x05,
+	0x79, 0x0c, 0x23, 0x76, 0x2f, 0x18, 0x8f, 0xbd, 0x08, 0x5f, 0x4d, 0x66, 0x77, 0xa4, 0xb6, 0x10,
+	0x7e, 0x94, 0xa3, 0xcc, 0xd7, 0x30, 0x92, 0xe9, 0x53, 0xa0, 0x36, 0x24, 0x6a, 0x33, 0x17, 0x4a,
+	0x54, 0xe6, 0x1c, 0xc3, 0x86, 0xba, 0x9d, 0xd7, 0xa7, 0x6a, 0x1e, 0xc4, 0x3c, 0x55, 0x9d, 0x7f,
+	0xb5, 0x60, 0x52, 0xbf, 0x9b, 0xc9, 0x21, 0x74, 0x92, 0xbb, 0x98, 0x71, 0xfd, 0x8e, 0x46, 0xa9,
+	0x52, 0x84, 0x2c, 0xfb, 0x98, 0x5c, 0x93, 0x1f, 0x43, 0x57, 0x6a, 0x0b, 0x1a, 0xf0, 0xd2, 0x34,
+	0x42, 0xa5, 0x48, 0x8a, 0x50, 0xb4, 0x8d, 0x50, 0xbc, 0x06, 0x28, 0x19, 0xa4, 0x77, 0x83, 0x93,
+	0x6f, 0x1e, 0x98, 0x0b, 0x8e, 0x2f, 0x0b, 0xe4, 0x79, 0x2c, 0xf8, 0x92, 0x1a, 0xa6, 0xe4, 0x0d,
+	0x0c, 0x03, 0x96, 0xb2, 0x38, 0x60, 0xb1, 0x1f, 0xea, 0x10, 0x0c, 0x4e, 0x7e, 0xfe, 0x10, 0xd5,
+	0x4b, 0x03, 0xab, 0xc8, 0x2a, 0xe6, 0xe4, 0x39, 0xf4, 0xe6, 0x5e, 0x9a, 0x86, 0xf1, 0x2c, 0xb3,
+	0xbb, 0x92, 0xea, 0xeb, 0x87, 0xa8, 0xde, 0x68, 0x9c, 0xa2, 0x29, 0xcc, 0x0e, 0x7e, 0x07, 0xe3,
+	0xda, 0x81, 0xc9, 0x04, 0x5a, 0x37, 0x6c, 0xa9, 0x43, 0x87, 0x8f, 0xf8, 0xda, 0xcd, 0x04, 0x57,
+	0x8b, 0xd3, 0xe6, 0xf7, 0xd6, 0xc1, 0x53, 0xd8, 0x5a, 0x39, 0xe4, 0xff, 0x44, 0xf0, 0x1b, 0x18,
+	0x55, 0x8e, 0xf6, 0x9f, 0x8c, 0x87, 0x86, 0xb1, 0xf3, 0x67, 0xd8, 0x5a, 0x19, 0xa7, 0xfe, 0x7f,
+	0xe5, 0x19, 0x22, 0x7b, 0x7d, 0x9a, 0xda, 0x86, 0x5e, 0xea, 0x71, 0x16, 0x8b, 0xa2, 0x3c, 0xad,
+	0x94, 0x10, 0xe8, 0xfa, 0x9f, 0xc2, 0x28, 0x28, 0xf3, 0xd2, 0x27, 0xfb, 0x30, 0xe4, 0xda, 0x28,
+	0xfb, 0x14, 0xa6, 0x45, 0x27, 0x2e, 0xea, 0xaa, 0x5d, 0xd6, 0x95, 0xf3, 0x7b, 0x18, 0x9a, 0x83,
+	0xd8, 0x6a, 0xea, 0xef, 0x40, 0x47, 0x96, 0x87, 0xdd, 0x54, 0x85, 0x27, 0x17, 0x65, 0x39, 0xb6,
+	0x8c, 0x72, 0x74, 0x6e, 0x60, 0x54, 0x99, 0xcc, 0xd6, 0x5e, 0xb4, 0xeb, 0xae, 0xa4, 0x9d, 0xbc,
+	0x6a, 0xd4, 0x59, 0xd5, 0x82, 0x1c, 0xae, 0xc4, 0xc6, 0x28, 0x17, 0xe7, 0x9f, 0x16, 0x40, 0x39,
+	0xcc, 0x91, 0xbd, 0xe2, 0xe0, 0x7d, 0x0a, 0x79, 0xfd, 0x5f, 0x04, 0xe4, 0xa7, 0xd0, 0x8b, 0x12,
+	0x5f, 0x8d, 0x75, 0x6a, 0xcb, 0x91, 0x1c, 0xfa, 0x18, 0xbf, 0x65, 0xfc, 0x3d, 0xbd, 0x78, 0x60,
+	0x6f, 0x07, 0x86, 0x3e, 0x67, 0xd2, 0xec, 0x5d, 0x58, 0xc4, 0xac, 0x22, 0x23, 0x07, 0xd0, 0xe3,
+	0xcc, 0x0b, 0xfe, 0x10, 0x47, 0x4b, 0xd9, 0xf0, 0x7a, 0xb4, 0x58, 0x93, 0x9f, 0x00, 0xdc, 0x86,
+	0x59, 0x38, 0x0d, 0xa3, 0x50, 0x2c, 0xe5, 0x2d, 0xde, 0xa7, 0x86, 0x84, 0x1c, 0x42, 0x5f, 0xce,
+	0x74, 0xc9, 0x22, 0x16, 0xf2, 0xe3, 0xa8, 0x45, 0x4b, 0x01, 0x6a, 0xe5, 0xbc, 0x28, 0xb5, 0x3d,
+	0xa5, 0x2d, 0x04, 0xce, 0x3f, 0x2c, 0xe8, 0xe5, 0xc3, 0xa0, 0xf1, 0xc2, 0xfa, 0xea, 0x85, 0xed,
+	0x43, 0x47, 0x84, 0x22, 0xca, 0x03, 0xdc, 0x0b, 0xfc, 0x53, 0xb9, 0x26, 0x3f, 0x83, 0x41, 0xc0,
+	0x32, 0x9f, 0x87, 0xa9, 0x0c, 0x86, 0x72, 0x77, 0x33, 0xf0, 0x4f, 0x0d, 0x29, 0x82, 0xfc, 0x24,
+	0x56, 0x19, 0x9d, 0x70, 0xed, 0x36, 0x82, 0x0c, 0x29, 0xf9, 0x0a, 0x20, 0x0c, 0x58, 0x2c, 0x70,
+	0xd4, 0xe2, 0xd2, 0xf5, 0x3e, 0x1d, 0x05, 0xfe, 0x69, 0x29, 0x24, 0xbb, 0xfa, 0x2d, 0x2b, 0xcf,
+	0xbb, 0x78, 0x08, 0x7c, 0xd1, 0xdf, 0x03, 0x78, 0x79, 0xbd, 0xe4, 0x9d, 0xc3, 0xae, 0x8d, 0xd9,
+	0x45, 0x41, 0x51, 0x03, 0xeb, 0xbc, 0x86, 0xad, 0x15, 0xc0, 0x17, 0x54, 0x9c, 0x70, 0x9e, 0xa9,
+	0xa1, 0xa1, 0x9c, 0xa6, 0xed, 0x3c, 0x97, 0x2d, 0x99, 0xcb, 0x7d, 0xbf, 0xd0, 0xec, 0x42, 0xb9,
+	0xd0, 0xf9, 0xdf, 0x4c, 0x13, 0x64, 0xa8, 0x0c, 0xe8, 0xc8, 0xa0, 0x6a, 0xe4, 0xbf, 0x65, 0xf8,
+	0x8b, 0x05, 0x5d, 0x3d, 0x1c, 0xaf, 0x56, 0xdc, 0x21, 0x40, 0x6e, 0x53, 0x94, 0x75, 0xf9, 0xdd,
+	0x81, 0xe5, 0xc3, 0xee, 0x45, 0x7e, 0x39, 0xe2, 0x33, 0xf9, 0x75, 0x25, 0xaa, 0x6d, 0x19, 0xd5,
+	0xfd, 0xea, 0x27, 0xc1, 0xfa, 0xa0, 0xbe, 0x82, 0x49, 0x5d, 0xff, 0x85, 0x31, 0x1d, 0xd7, 0x3e,
+	0x23, 0xca, 0x0e, 0x61, 0x99, 0x17, 0xf6, 0x3e, 0x0c, 0x32, 0xe3, 0x2b, 0xc2, 0x8c, 0xe9, 0xb8,
+	0xf6, 0x11, 0x51, 0x76, 0x1e, 0xcb, 0xec, 0x3c, 0x0f, 0x32, 0x5c, 0xc2, 0xd0, 0xfc, 0x8a, 0x58,
+	0x3b, 0x0b, 0x6e, 0x43, 0x2f, 0xff, 0xb2, 0xc8, 0xbd, 0xb9, 0x26, 0xfb, 0xd0, 0xf7, 0xf8, 0x6c,
+	0x31, 0xd7, 0x63, 0x6b, 0x0b, 0xc3, 0xea, 0xf1, 0x59, 0xe6, 0x3c, 0x81, 0x81, 0xf1, 0x75, 0x81,
+	0xd3, 0x4d, 0x65, 0xdc, 0x53, 0xff, 0x93, 0x94, 0x33, 0x53, 0xb3, 0x9c, 0x99, 0x4e, 0xde, 0xc3,
+	0xc8, 0xbf, 0x7f, 0xe3, 0x09, 0x86, 0x7d, 0x26, 0xf4, 0x19, 0x79, 0x09, 0x9b, 0x57, 0x82, 0x33,
+	0x6f, 0xae, 0x1b, 0x6d, 0x46, 0x76, 0xab, 0x7f, 0x65, 0xe8, 0xff, 0x8a, 0x0e, 0xd6, 0x8b, 0x9d,
+	0xc6, 0x91, 0xf5, 0xad, 0x35, 0xdd, 0x90, 0xba, 0xef, 0xfe, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x8e,
+	0x4d, 0x4d, 0x7d, 0x79, 0x12, 0x00, 0x00,
 }

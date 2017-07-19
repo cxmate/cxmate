@@ -152,12 +152,12 @@ message CyVisualProperty {
   int64 view = 4 [ json_name = "view" ];
   map<string, string> properties = 5 [ json_name = "properties" ];
   map<string, string> dependencies = 6 [ json_name = "dependencies" ];
-  map<string, map<string, string>> mappings = 7 [ json_name = "mappings" ];
+  map<string, bytes> mappings = 7 [ json_name = "mappings" ];
 }
 
 // aspect: cyHiddenAttributes
 // CyHiddenAttribute represents a Cytoscape hidden attribute.
-message CyHiddenAttributes {
+message CyHiddenAttribute {
   string name = 1 [ json_name = "n" ];
   string value = 2 [ json_name = "v" ];
   string type = 3 [ json_name = "d" ];
@@ -215,7 +215,14 @@ message Citation {
   string contributor = 4 [ json_name = "dc:contributor" ];
   string identifier = 5 [ json_name = "dc:identifier" ];
   string type = 6 [ json_name = "dc:type" ];
-  repeated map<string, string> attributes = 7 [ json_name = "attributes" ];
+  repeated CitationAttribute attributes = 7 [ json_name = "attributes" ];
+}
+
+// CitationAttribute holds an attribute of a citation.
+message CitationAttribute {
+  string name = 1 [ json_name = "n" ];
+  string value = 2 [ json_name = "v" ];
+  string type = 3 [ json_name = "t" ];
 }
 
 // aspect: nodeCitations
@@ -228,17 +235,24 @@ message NodeCitations {
 // aspect: edgeCitations
 // EdgeCitations creates a series of edges to citations mappings.
 message EdgeCitations {
-  repeated int64 edges = 2 [ json_name = "citations" ];
+  repeated int64 edges = 1 [ json_name = "citations" ];
   repeated int64 citations = 2 [ json_name = "po" ];
 }
 
 // aspect: supports
 // Support specifies text that can support one or more nodes or edges in a network.
-message Supports {
+message Support {
   int64 id = 1 [ json_name = "@id" ];
   int64 citationId = 2 [ json_name = "citation" ];
   string text = 3 [ json_name = "text" ];
-  repeated map<string, string> attributes = 4 [ json_name = "attributes" ];
+  repeated SupportAttribute attributes = 4 [ json_name = "attributes" ];
+}
+
+// SupportAttribute holds an attribute of a supportant.
+message SupportAttribute {
+  string name = 1 [ json_name = "n" ];
+  string value = 2 [ json_name = "v" ];
+  string type = 3 [ json_name = "t" ];
 }
 
 // aspect: nodeSupports
