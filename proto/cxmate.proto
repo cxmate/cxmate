@@ -2,22 +2,15 @@ syntax = "proto3";
 
 package proto;
 
-// import "google/protobuf/any.proto";
-
 // ********** SERVICE DEFINITION **********
-// A cxMate service must implement some or all of the method
-// signatures in the service block.
-service cxMateService { // StreamElements allows cxMate to stream one or more networks to a service
-  // which can then stream one or more networks back.
+
+// cxMateService defines a cxMate compatible service implementation
+service cxMateService {
+  // StreamNetworks transfers one or more networks to and from the service.
   rpc StreamNetworks (stream NetworkElement) returns (stream NetworkElement) {}
 }
 
-// ********** INPUT/OUTPUT MESSAGES **********
-// NetworkElement is a wrapper that constains a label, which is used to allow
-// StreamNetworks to send and receive more than one network.NetworkElement is also a wrapper for exactly one element.
-//  Some elements do not exist in CX, like Parameter and Error, which are special elements used to communicate out of band information
-// between cxMate and a service. The other elements corrospond to an aspect in a CX document. These
-// elements should be used to build networks, and turn networks back into elements cxMate can understand.
+// NetworkElement is a wrapper for all of the cxMate supported element types.
 message NetworkElement {
   string label = 1;
   oneof element {
@@ -28,18 +21,30 @@ message NetworkElement {
     NodeAttribute nodeAttribute = 6;
     EdgeAttribute edgeAttribute = 7;
     NetworkAttribute networkAttribute = 8;
-    CartesianLayout cartesianLayout = 9;
+    CartesianCoordinate CartesianCoordinate = 9;
+    CyGroup cyGroup = 10;
+    CyView cyView = 11;
+    CyVisualProperty cyVisualProperty = 12;
+    CyHiddenAttribute cyHiddenAttribute = 13;
+    CyNetworkRelation cyNetworkRelation = 14;
+    CySubNetwork cySubNetwork = 15;
+    CyTableColumn cyTableColumn = 16;
+    NdexStatus ndexStatus = 17;
+    Citation citation = 18;
+    NodeCitations nodeCitations = 19;
+    EdgeCitations edgeCitations = 20;
+    Support support = 21;
+    NodeSupportance nodeSupportance = 22;
+    EdgeSupportance edgeSupportance = 23;
+    FunctionTerm functionTerm = 24;
+    ReifiedEdge reifiedEdge = 25;
   }
 }
 
-// ********** UTILITY MESSAGES **********
-// These are messages which may be passed as NetworkElements, but really are not part of a Network.
-// They are out of band messages used to send and receive addititional information between a service and cxMate.
+// ********* SERVICE ELEMENTS *********
+// Elements that do no exist in the network, but pass service information to and from the service.
 
-// Parameter represents a named value passed from cxMate to the service.
-// A service should never send a Parameter to cxMate, it will be discarded.
-// Parameters are usually used to pass query string parameters (?key=value pairs in a URL)
-// to a service for small tweaks to the way a service runs.
+// Parameter represents a service parameter.
 message Parameter {
   string name = 1;
   string format = 2;
@@ -51,9 +56,7 @@ message Parameter {
   }
 }
 
-// Error represents an error from either cxMate or the service. Errors sent
-// from the service to cxMate will be encoded in the final JSON response returned to
-// the REST client. Sending back good error messages is good practice.
+// Error represents a service error.
 message Error {
   int64 status = 1;
   string type = 2;
@@ -61,22 +64,10 @@ message Error {
   string link = 4;
 }
 
-// ********** CX ASPECT MESSAGES **********
-// These are messages that corrospond to CX aspects. They are annotated with the json keys you would find
-// in a CX file. For instance, a node element in CX can have an attached name with the "n" key, but cxMate turns this
-// into a name field. Longer field names are free using protocol buffers, and it makes code easier to read and the purpose
-// of each field clear.
+// ********** BASE ELEMENTS **********
+// Elements common to all CX networks
 
-// To assemble a network from CX elements, it's useful to have read the CX specification document, or some tutorial on CX.
-// In short, basic elements like Node and Edge are straightforward, and a network can be assembled by connecting Edge source and target Ids
-// to their corrosponding Nodes. Other aspects usually link to a node or edge by including an edgeId or nodeId. You can think of CX as a
-// hyperlinked document that you are rendering, and must resolve the links.
-
-// Note that Element order is not garunteed by CX. It is possible to receive an edge that has a sourceId that references a node that does not
-// yet exist. Depending on how important correctness is for your program, you may elect to optimistcally create the node, or perhaps you may
-// keep the edge in a list until the node arrives. This is a feature of CX, cxMate always streams CX documents, allowing cxMate to process large
-// networks, and cannot resolve this ordering for you presently.
-
+// aspect: node
 // Node represents a single node in a network.
 message Node {
   int64 id = 1 [ json_name = "@id" ];
@@ -84,6 +75,7 @@ message Node {
   string represents = 3 [ json_name = "r" ];
 }
 
+// aspect: edge
 // Edge represents a single edge in a network.
 message Edge {
   int64 id = 1 [ json_name = "@id" ];
@@ -92,6 +84,7 @@ message Edge {
   string interaction = 4 [ json_name = "i" ];
 }
 
+// aspect: nodeAttribute
 // NodeAttribute represents a single attribute attached to a node.
 message NodeAttribute {
   int64 nodeId = 1 [ json_name = "po" ];
@@ -101,6 +94,7 @@ message NodeAttribute {
   int64 subnetId = 5 [ json_name = "s" ];
 }
 
+// aspect: edgeAttribute
 // EdgeAttribute represents a single attribute attached to an edge.
 message EdgeAttribute {
   int64 edgeId = 1 [ json_name = "po" ];
@@ -110,7 +104,8 @@ message EdgeAttribute {
   int64 subnetId = 5 [ json_name = "s" ];
 }
 
-//  NetworkAttribute represents a single attribute attached to a network.
+// aspect: networkAttributes
+// NetworkAttribute represents a single attribute attached to a network.
 message NetworkAttribute {
   string name = 1 [ json_name = "n" ];
   string value = 2 [ json_name = "v" ];
@@ -118,8 +113,9 @@ message NetworkAttribute {
   int64 subnetId = 4 [ json_name = "s" ];
 }
 
-//  CartesianLayout represents an (x,y,(z)) coordinate attached to a node.
-message CartesianLayout {
+// aspect: cartesianLayout
+// CartesianCoordinate represents an (x,y,(z)) coordinate attached to a node.
+message CartesianCoordinate {
   int64 nodeId = 1 [ json_name = "node" ];
   double x = 2 [ json_name = "x" ];
   double y = 3 [ json_name = "y" ];
@@ -127,6 +123,10 @@ message CartesianLayout {
   int64 viewId = 5 [ json_name = "view" ];
 }
 
+// ********* CYTOSCAPE ELEMENTS *********
+// Elements used by Cytoscape to represent Cytoscape constructs
+
+// aspect: cyGroups
 // CyGroup represents a Cytoscape group.
 message CyGroup {
   int64 id = 1 [ json_name = "@id" ];
@@ -137,12 +137,14 @@ message CyGroup {
   repeated int64 internalEdges = 6 [ json_name = "internal_edges" ];
 }
 
+// aspect: cyViews
 // CyView represents a Cytoscape view.
 message CyView {
   int64 id = 1 [ json_name = "@id" ];
   int64 subnetId = 2 [ json_name = "s" ];
 }
 
+// aspect: cyVisualProperties
 // CyVisualProperty represents a Cytoscape visual property.
 message CyVisualProperty {
   string owner = 1 [ json_name = "properties_of" ];
@@ -153,6 +155,7 @@ message CyVisualProperty {
   map<string, map<string, string>> mappings = 7 [ json_name = "mappings" ];
 }
 
+// aspect: cyHiddenAttributes
 // CyHiddenAttribute represents a Cytoscape hidden attribute.
 message CyHiddenAttributes {
   string name = 1 [ json_name = "n" ];
@@ -161,6 +164,7 @@ message CyHiddenAttributes {
   int64 subnetId = 4 [ json_name = "s" ];
 }
 
+// aspect: cyNetworkRelations
 // CyNetworkRelation represents a relationship between two Cytoscape networks.
 message CyNetworkRelation {
   int64 parentId = 1 [ json_name = "p" ];
@@ -169,6 +173,7 @@ message CyNetworkRelation {
   string name = 4 [ json_name = "name" ];
 }
 
+// aspect: cySubNetworks
 // CySubNetwork represents a Cytoscape collection subnetwork.
 message CySubNetwork {
   int64 id = 1 [ json_name = "@id" ];
@@ -176,10 +181,91 @@ message CySubNetwork {
   repeated int64 nodes = 3 [ json_name = "nodes" ];
 }
 
+// aspect: cyTableColumns
 // CyTableColumn represents a Cytoscape column.
 message CyTableColumn {
   string name = 1 [ json_name = "name" ];
   string type = 2 [ json_name = "type" ];
   string owner = 3 [ json_name = "owner" ];
   int64 subnetId = 4 [ json_name = "applies_to" ];
+}
+
+// *********** NDEx ELEMENTS ***********
+// Elements used by NDEx to represent NDEx constructs
+
+// aspect: ndexStatus
+// NdexStatus represents the status of a network on an NDEx server.
+message NdexStatus {
+  string id = 1 [ json_name = "externalId" ];
+  string location = 2 [ json_name = "ndexServerURI" ];
+  string owner = 3 [ json_name = "owner" ];
+  string creationTime = 4 [ json_name = "creationTime" ];
+  bool readOnly = 5 [ json_name = "readOnly" ];
+  string visibility = 6 [ json_name = "visibility" ];
+  int64 edgeCount = 7 [ json_name = "edgeCount" ];
+  int64 nodeCount = 8 [ json_name = "nodeCount" ];
+}
+
+// aspect: citations
+// Citation specifies a literature reference to a network.
+message Citation {
+  string id = 1 [ json_name = "@id" ];
+  string title = 2 [ json_name = "dc:title" ];
+  string description = 3 [ json_name = "dc:description" ];
+  string contributor = 4 [ json_name = "dc:contributor" ];
+  string identifier = 5 [ json_name = "dc:identifier" ];
+  string type = 6 [ json_name = "dc:type" ];
+  repeated map<string, string> attributes = 7 [ json_name = "attributes" ];
+}
+
+// aspect: nodeCitations
+// NodeCitations creates a series of nodes to citations mappings.
+message NodeCitations {
+  repeated int64 nodes = 1 [ json_name = "citations" ];
+  repeated int64 citations = 2 [ json_name = "po" ];
+}
+
+// aspect: edgeCitations
+// EdgeCitations creates a series of edges to citations mappings.
+message EdgeCitations {
+  repeated int64 edges = 2 [ json_name = "citations" ];
+  repeated int64 citations = 2 [ json_name = "po" ];
+}
+
+// aspect: supports
+// Support specifies text that can support one or more nodes or edges in a network.
+message Supports {
+  int64 id = 1 [ json_name = "@id" ];
+  int64 citationId = 2 [ json_name = "citation" ];
+  string text = 3 [ json_name = "text" ];
+  repeated map<string, string> attributes = 4 [ json_name = "attributes" ];
+}
+
+// aspect: nodeSupports
+// NodeSupportance provides supportance for a series of nodes.
+message NodeSupportance {
+  repeated int64 nodes = 1 [ json_name = "nodes" ];
+  repeated int64 supportance = 2 [ json_name = "po" ];
+}
+
+// aspect: edgeSupports
+// EdgeSupportance provides supportance for a series of edges.
+message EdgeSupportance {
+  repeated int64 edges = 1 [ json_name = "edges" ];
+  repeated int64 supportance = 2 [ json_name = "po" ];
+}
+
+// aspect: functionTerms
+// FuntionTerm link nodes with expressions that define the meaning of the node.
+message FunctionTerm {
+  int64 nodeId = 1 [ json_name = "po" ];
+  string function = 2 [ json_name = "f" ];
+  repeated string arguments = 3 [ json_name = "args" ];
+}
+
+// reifiedEdges: reifiedEdges
+// ReifiedEdge logically turns a node into an edge.
+message ReifiedEdge {
+  int64 edgeId = 1 [ json_name = "edge" ];
+  int64 nodeId = 2 [ json_name = "node" ];
 }
