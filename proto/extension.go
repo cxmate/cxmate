@@ -56,7 +56,7 @@ func NetworkElementFromJSON(label string, eleType string, dec *json.Decoder) (*N
 	case "cyNetworkRelations":
 		ele := &CyNetworkRelation{}
 		err = jsonpb.UnmarshalNext(dec, ele)
-		n.Element = &NetworkElement_CyNetworkrelation{ele}
+		n.Element = &NetworkElement_CyNetworkRelation{ele}
 	case "cySubNetworks":
 		ele := &CySubNetwork{}
 		err = jsonpb.UnmarshalNext(dec, ele)
@@ -76,7 +76,7 @@ func NetworkElementFromJSON(label string, eleType string, dec *json.Decoder) (*N
 	case "nodeCitations":
 		ele := &NodeCitations{}
 		err = jsonpb.UnmarshalNext(dec, ele)
-		n.Element = &NetworkElements_NodeCitations{ele}
+		n.Element = &NetworkElement_NodeCitations{ele}
 	case "edgeCitations":
 		ele := &EdgeCitations{}
 		err = jsonpb.UnmarshalNext(dec, ele)
@@ -134,9 +134,7 @@ func NetworkElementToJSON(w io.Writer, e *NetworkElement) error {
 	case *NetworkElement_CyHiddenAttribute:
 		m.Marshal(w, e.GetCyHiddenAttribute())
 	case *NetworkElement_CyNetworkRelation:
-		m.Marshal(w, e.CyHiddenAttribute())
-	case *NetworkElement_CyNetworkRelation:
-		m.Marshal(w, e.CyNetworkRelation())
+		m.Marshal(w, e.GetCyNetworkRelation())
 	case *NetworkElement_CySubNetwork:
 		m.Marshal(w, e.GetCySubNetwork())
 	case *NetworkElement_CyTableColumn:
