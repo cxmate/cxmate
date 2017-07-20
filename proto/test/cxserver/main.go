@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/ericsage/cxmate/proto"
+	"github.com/cxmate/cxmate/proto"
 	"google.golang.org/grpc"
 )
 
