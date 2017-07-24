@@ -6,8 +6,7 @@ jobs:
     working_directory: /go/src/github.com/cxmate/cxmate
     steps:
       - checkout
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...
+      - run: go test $(go list ./... | grep -v /vendor/)
       - deploy:
           name: Github Release
           command: |
