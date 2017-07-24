@@ -10,6 +10,7 @@ jobs:
       - deploy:
           name: Github Release
           command: |
+            uname -r
             go get github.com/mitchellh/gox
             go get github.com/tcnksm/ghr
             gox -output "dist/cxmate.{{.OS}}.{{.Arch}}"
