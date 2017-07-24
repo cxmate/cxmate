@@ -7,11 +7,3 @@ jobs:
     steps:
       - checkout
       - run: go test $(go list ./... | grep -v /vendor/)
-      - deploy:
-          name: Github Release
-          command: |
-            uname -a
-            go get github.com/mitchellh/gox
-            go get github.com/tcnksm/ghr
-            gox -output "dist/cxmate.{{.OS}}.{{.Arch}}"
-            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
