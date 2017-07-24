@@ -107,11 +107,9 @@ func (p *Parser) network(network string, aspects []string) error {
 	return nil
 }
 
-// maxInt is the value a CX parser must be able to represent.
-const maxInt = 281474976710655
-
 // numberVerification parses the numberVerification aspect and checks that the correct longNumber has been set.
 func (p *Parser) numberVerification(network string) error {
+	var maxInt int64 = 281474976710655
 	logDebug("Parsing number verification in", network)
 	var aspect map[string][]map[string]int
 	if err := p.value(&aspect, "the CX NumberVerification aspect"); err != nil {
@@ -128,7 +126,7 @@ func (p *Parser) numberVerification(network string) error {
 	if !ok {
 		return errors.New(`missing key "longNumber" in numberVerification aspect element`)
 	}
-	if ln != maxInt {
+	if int64(ln) != maxInt {
 		return fmt.Errorf("expected longNumber %d found %d", maxInt, ln)
 	}
 	return nil
