@@ -42,44 +42,62 @@ Example:
 {
   "general": {
     "location": "0.0.0.0:80",
-    "domain": "echo.cytoscape.io",
     "logger": {
-      "debug": true,
-      "file": "echo.log",
-      "format": "json"
+      "debug": true
     }
   },
   "service": {
     "location": "localhost:8080",
-    "title": "echo",
-    "author": "Eric Sage",
+    "title": "Heat Diffusion",
+    "version": "3.0.0",
+    "author": "Daniel Carlin",
     "email": "edsage@ucsd.edu",
-    "description": "A test service that echos its input to its output.",
-    "website": "http://github.com/ericsage/echo",
-    "repository": "http://github.com/ericsage/echo",
+    "website": "http://apps.cytoscape.org/apps/diffusion",
+    "repository": "http://github.com/idekerlab/diffusiond",
+    "description": "Accepts a network with node heats, and propogates the heat along edges to create a new heat layout",
     "license": "MIT",
     "language": "Python",
     "parameters": [
       {
-        "key": "test_param",
-        "default": "1.0",
-        "description": "A parameter may be any string encoded value. The default value is garunteed to reach the service."
+        "name": "time",
+        "default": "0.1",
+        "description": "The upper bound on the exponential multiplication performed by diffusion",
+        "type": "number"
+
+      },
+      {
+        "name": "normalize_laplacian",
+        "default": "False",
+        "description": "If True, will create a normalized laplacian matrix for diffusion",
+        "type": "boolean"
+      },
+      {
+        "name": "input_attribute_name",
+        "default": "diffusion_input",
+        "description": "The key diffusion will use to search for heats in the node attributes with"
+      },
+      {
+        "name": "output_attribute_name",
+        "default": "diffusion_output",
+        "description": "Will be the prefix of the _rank and _heat attriubtes created by diffusion"
       }
     ],
     "input": [
       {
         "label": "Input",
-        "description": "An input network to be echoed",
-        "aspects": ["nodes", "edges", "nodeAttributes", "edgeAttributes", "networkAttributes"]
+        "description": "An input network with heat values attached to nodes",
+        "aspects": ["nodes", "edges", "nodeAttributes"]
       }
     ],
+    "singletonInput": true,
     "output": [
       {
-        "name": "Output",
-        "description": "An output network which is the same network as the input.",
-        "aspects": ["node", "edge", "nodeAttribute", "edgeAttribute", "networkAttribute"]
+        "label": "Output",
+        "description": "An output network with new heats and a rank attribute created by diffusion",
+        "aspects": ["nodes", "edges", "nodeAttributes"]
       }
-    ]
+    ],
+    "singletonOutput": true
   }
 }
 ```
