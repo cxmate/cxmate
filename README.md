@@ -71,7 +71,7 @@ Example:
 }
 ```
 
-####General
+#### General
 Configures how cxMate will operate as a service proxy.
 
 | Option   | Required | Default | Description                                                                                                           |
@@ -80,7 +80,7 @@ Configures how cxMate will operate as a service proxy.
 | domain   | false    | ""      | The HTTP URL cxMate will listen on.                                                                                   |
 | logger   | false    | N/A     | See Logger                                                                                                            |
 
-####Logger
+#### Logger
 Configures how the cxMate standard logger will operate. By default the logger will output text to stdout without debugging information.
 
 | Option | Required | Default | Description                                                                             |
@@ -89,7 +89,7 @@ Configures how the cxMate standard logger will operate. By default the logger wi
 | file   | false    | ""      | If set, the logger logs to the speicifed file (creating the file if it does not exist). |
 | format | false    | ""      | Sets the format of the log messages. Supported values are 'text' and 'json'.            |
 
-####Service
+#### Service
 Configures how cxMate will interact with the backing service, and also provides service metadata to cxMate.
 
 | Option          | Required | Default | Description                                                                                                                                 |
@@ -109,7 +109,7 @@ Configures how cxMate will interact with the backing service, and also provides 
 | output          | true     | N/A     | A list of NetworkDescriptions. Each NetworkDescription describes a network sent as output. See NetworkDescription.                          |
 | singletonOutput | false    | false   | If set, only the first element in the array of outputs will be used. It will be sent as a singleton network in the output of the service.   |
 
-####Parameter
+#### Parameter
 A parameter expected by the service. cxMate garuntees that the service will receive at least one parameter for each parameter defined (default values are required), however, multiple query string parameters with the key name will send multiple cxMate parameters to the service.
 
 | Option      | Required | Default  | Description                                                                             |
@@ -120,7 +120,7 @@ A parameter expected by the service. cxMate garuntees that the service will rece
 | type        | false    | "string" | The type cxMate will cast the query string to before sending the parameter to the service. Must be one of "number", "integer", "boolean", or "string", e.g. if type is set to number "?match=1.0"  will cast "1.0" to 1.0. |
 | format      | false    | ""       | Extra semantic information, e.g. "password", "float64", "secret", "gene", etc.                                                                                                                                             |
 
-####NetworkDescription
+#### NetworkDescription
 Describes a CX network.
 
 | Option      | Required | Default  | Description                                                                             |
