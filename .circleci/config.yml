@@ -6,13 +6,13 @@ jobs:
     working_directory: /go/src/github.com/cxmate/cxmate
     steps:
       - checkout
-			- run:
-				environment:
-					CC_TEST_REPORTER_ID: 19a448e55c35b4495210d9300bdda98060f637eaa8dd3cb7724ff93e43f4f860
-				name: Code Coverage
-				command: |
-					curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-					chmod +x ./cc-test-reporter
-					./cc-test-reporter before-build
+      - run:
+        environment:
+          CC_TEST_REPORTER_ID: 19a448e55c35b4495210d9300bdda98060f637eaa8dd3cb7724ff93e43f4f860
+        name: Code Coverage
+        command: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
       - run: go test $(go list ./... | grep -v /vendor/)
-			- run: ./cc-test-reporter after-build
+      - run: ./cc-test-reporter after-build
