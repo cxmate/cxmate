@@ -73,6 +73,7 @@ Example:
 
 ####General
 Configures how cxMate will operate as a service proxy.
+
 | Option   | Required | Default | Description                                                                                                           |
 | -------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
 | location | true     | N/A     | The address and port cxMate will listen for requests on, e.g. "0.0.0.0:80" will listen on all interfaces on port 80.  |
@@ -81,6 +82,7 @@ Configures how cxMate will operate as a service proxy.
 
 ####Logger
 Configures how the cxMate standard logger will operate. By default the logger will output text to stdout without debugging information.
+
 | Option | Required | Default | Description                                                                             |
 | ------ | -------- | ------- | --------------------------------------------------------------------------------------- |
 | debug  | false    | false   | Logs extra debugging information when set.                                              |
@@ -89,6 +91,7 @@ Configures how the cxMate standard logger will operate. By default the logger wi
 
 ####Service
 Configures how cxMate will interact with the backing service, and also provides service metadata to cxMate.
+
 | Option          | Required | Default | Description                                                                                                                                 |
 | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | location        | true     | N/A     | The address and port cxMate will contact the service on.                                                                                    |
@@ -108,6 +111,7 @@ Configures how cxMate will interact with the backing service, and also provides 
 
 ####Parameter
 A parameter expected by the service. cxMate garuntees that the service will receive at least one parameter for each parameter defined (default values are required), however, multiple query string parameters with the key name will send multiple cxMate parameters to the service.
+
 | Option      | Required | Default  | Description                                                                             |
 | ----------- | -------- | -------- | --------------------------------------------------------------------------------------- |
 | name        | true     | N/A      | The name of the parameter will be matched against the query string parameters sent to the service, e.g. "?heat=1.0" will match name "heat".                                                                                |
@@ -118,6 +122,7 @@ A parameter expected by the service. cxMate garuntees that the service will rece
 
 ####NetworkDescription
 Describes a CX network.
+
 | Option      | Required | Default  | Description                                                                             |
 | ----------- | -------- | -------- | --------------------------------------------------------------------------------------- |
 | label       | true     | N/A      | The name of the parameter will be matched against the query string parameters sent to the service, e.g. "?heat=1.0" will match name "heat".                                                                                |
