@@ -1,3 +1,9 @@
+
+[![CircleCI](https://circleci.com/gh/cxmate/cxmate.svg?style=svg)](https://circleci.com/gh/cxmate/cxmate)
+[![Test Coverage](https://codeclimate.com/github/cxmate/cxmate/badges/coverage.svg)](https://codeclimate.com/github/cxmate/cxmate)
+[![Issue Count](https://codeclimate.com/github/cxmate/cxmate/badges/issue_count.svg)](https://codeclimate.com/github/cxmate/cxmate)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cxmate/cxmate)](https://goreportcard.com/report/github.com/cxmate/cxmate)
+
 cxmate
 ======
 
