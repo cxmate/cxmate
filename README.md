@@ -31,6 +31,7 @@ The easiest way to use cxMate is with an official cxMate SDK. The cxMate SDKs pr
 
 Offical cxMate SDKs:
 - [Python](http://github.com/cxmate/cxmate-py)
+- *More to come*
 
 Configuration
 -------------
