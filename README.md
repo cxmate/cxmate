@@ -10,7 +10,7 @@ cxMate
 
 ---
 
-cxMate streams Cytoscape networks directly to your code. cxMate listens for CX on a network, Cytoscape's native network format, and transforms it data structures in your's codes native language. cxMate will any networks you want to send to Cytoscape back into CX. When you use cxMate, your code can also be used by any other tool, service, or program that speaks CX like an NDEx server. The requests that cxMate responds to are plain HTTP calls, so your service can also be called from any HTTP client, such as the requests Python module from a Jupyter notebook, or curl.
+cxMate streams Cytoscape networks directly to your code. cxMate listens for CX (Cytoscape's native network format)* over the web, trasforming CX into data structures native to your programming language of choice. cxMate will also transform any networks you want to send to Cytoscape back into CX. When you use cxMate, your code can also be used by any other tool, service, or program that speaks CX, like an NDEx server. cxMate responds to plain http calls, so your service can also be called from any HTTP client, such as the requests Python module from a Jupyter notebook, or curl.
 
 ---
 
