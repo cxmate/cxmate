@@ -103,7 +103,7 @@ func (m *Mate) parseCX(s *ServiceStream, p map[string][]string, r io.ReadCloser)
 	if err := m.Config.Service.Parameters.send(send, p); err != nil {
 		return err
 	}
-	if err := m.Config.Service.Input.parse(r, send, m.Config.Service.Singleton); err != nil {
+	if err := m.Config.Service.Input.parse(r, send, m.Config.Service.SingletonInput); err != nil {
 		return err
 	}
 	close(send)
@@ -114,7 +114,7 @@ func (m *Mate) generateCX(s *ServiceStream, w io.Writer) error {
 	m.Logger.Debugln("Generating CX")
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	if err := m.Config.Service.Output.generate(w, receive, m.Config.Service.Singleton); err != nil {
+	if err := m.Config.Service.Output.generate(w, receive, m.Config.Service.SingletonOutput); err != nil {
 		return err
 	}
 	return nil

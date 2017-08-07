@@ -52,14 +52,16 @@ type ServiceConfig struct {
 	License string `json:"license"`
 	//Language should be set to the name of the programming langugage the algorithm is written in.
 	Language string `json:"language"`
-	//Singleton will cause input and output configs of size 1 to be treated as scalars
-	Singleton bool `json:"singleton"`
 	//Parameters is a list of key/value pair objects that should augment the way an algorithm behaves.
 	Parameters ParameterConfig `json:"parameters"`
 	//Inputs is used to describe multiple networks as input to the algorithm.
 	Input ParserConfig `json:"input"`
+	//SingletonInput will cause input configs of size 1 to be treated as scalars
+	SingletonInput bool `json:"singletonInput"`
 	//Outputs is used to describe multiple networks as output to the algorithm.
 	Output GeneratorConfig `json:"output"`
+	//SingletonOutput will cause output configs of size 1 to be treated as scalars
+	SingletonOutput bool `json:"singletonOutput"`
 }
 
 func (c ServiceConfig) validate() error {
