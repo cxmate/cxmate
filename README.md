@@ -21,7 +21,7 @@ Installation
 
 cxMate comes precompiled as a static binary for a number of platforms, and exists on Docker Hub as a container image that can be run with Docker, Docker Swarm, or Kubernetes.
 
-- Download a precompiled static binary for your platform [here](https://github.com/ericsage/cxmate/releases)
+- Download a precompiled static binary for your platform [here](https://github.com/cxmate/cxmate/releases)
 - Run cxmate in a docker container with the [official Docker Hub image](https://hub.docker.com/r/ericsage/cxmate/)
 
 Getting Started
