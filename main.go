@@ -37,7 +37,7 @@ func NewMate() (*Mate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("connecting to service failed: %v", err)
 	}
-	logger, err := config.General.Logger.NewLogger(serviceConf.Name, serviceConf.Version)
+	logger, err := config.General.Logger.NewLogger(serviceConf.Title, serviceConf.Version)
 	if err != nil {
 		return nil, fmt.Errorf("logger creation failed: %v", err)
 	}
@@ -60,24 +60,24 @@ const (
 func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 	m.Logger.Infoln("Request received")
 	if req.Method != "POST" {
-		writeHTTPError(res, m.Config.Service.Name, methodNotAllowedMessage, http.StatusMethodNotAllowed)
+		writeHTTPError(res, m.Config.Service.Title, methodNotAllowedMessage, http.StatusMethodNotAllowed)
 		m.Logger.Errorln("Root endpoint requires method: POST received:", req.Method)
 		return
 	}
 	if req.Header.Get("Content-Type") != "application/json" {
-		writeHTTPError(res, m.Config.Service.Name, unsupportedMediaTypeMessage, http.StatusUnsupportedMediaType)
+		writeHTTPError(res, m.Config.Service.Title, unsupportedMediaTypeMessage, http.StatusUnsupportedMediaType)
 		m.Logger.Errorln("Root endpoint requires content-type: application/json received:", req.Header.Get("Content-Type"))
 		return
 	}
 	stream, err := m.Conn.NewServiceStream()
 	if err != nil {
-		writeHTTPError(res, m.Config.Service.Name, errorEstablishingConnectionMessage, http.StatusFailedDependency)
+		writeHTTPError(res, m.Config.Service.Title, errorEstablishingConnectionMessage, http.StatusFailedDependency)
 		m.Logger.Errorln("Could not create service stream error:", err)
 		return
 	}
 	if err := m.parseCX(stream, req.URL.Query(), req.Body); err != nil {
 		m.Logger.Errorln("Parser error:", err)
-		writeHTTPError(res, m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
+		writeHTTPError(res, m.Config.Service.Title, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	io.WriteString(res, `{"data":`)
@@ -88,7 +88,7 @@ func (m *Mate) handleRoot(res http.ResponseWriter, req *http.Request) {
 			io.WriteString(res, `""`)
 		}
 		io.WriteString(res, `, "errors":[`)
-		httpErr := NewHTTPError(m.Config.Service.Name, err.Error(), http.StatusInternalServerError)
+		httpErr := NewHTTPError(m.Config.Service.Title, err.Error(), http.StatusInternalServerError)
 		httpErr.toJSON(res)
 		io.WriteString(res, `]}`)
 	} else {

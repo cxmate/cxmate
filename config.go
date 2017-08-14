@@ -38,14 +38,14 @@ func (c GeneralConfig) validate() error {
 type ServiceConfig struct {
 	//Location is a URL:PORT that the Proxy expects the service to be listening on.
 	Location string `json:"location"`
-	//Name gives a short descriptive name to the algorithm.
-	Name string `json:"name"`
+	//Title gives a short descriptive name to the algorithm.
+	Title string `json:"title"`
 	//Version gives a version to the algorithm.
 	Version string `json:"version"`
 	//Author is the name(s) of the algorithm author.
 	Author string `json:"author"`
-	//Summary gives a small description of the service, what it does, and any caveats to using it.
-	Summary string `json:"summary"`
+	//Description gives a small description of the service, what it does, and any caveats to using it.
+	Description string `json:"description"`
 	//Keywords is a list of words and phrases that describes the domain of the algorithm.
 	Keywords []string `json:"keywords"`
 	//License should be set to the name under which this algorithm is licensed.
@@ -68,7 +68,7 @@ func (c ServiceConfig) validate() error {
 	if c.Location == "" {
 		return errors.New("service config missing required location field")
 	}
-	if c.Name == "" {
+	if c.Title == "" {
 		return errors.New("service config missing required name field")
 	}
 	if c.Version == "" {

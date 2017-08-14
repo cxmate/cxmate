@@ -18,9 +18,9 @@ var completeConfig = `
 	},
 	"service": {
 		"location": "localhost:8080",
-		"name": "test",
+		"title": "test",
 		"author": "John Doe",
-		"summary": "my service",
+		"description": "my service",
 		"keywords": ["networks"],
 		"license": "MIT",
 		"language": "Python",
@@ -62,14 +62,14 @@ func TestLoadConfig(t *testing.T) {
 	if config.Service.Location != "localhost:8080" {
 		t.Error("config.Service.Location not set")
 	}
-	if config.Service.Name != "test" {
-		t.Error("config.Service.Name not set")
+	if config.Service.Title != "test" {
+		t.Error("config.Service.Title not set")
 	}
 	if config.Service.Author != "John Doe" {
 		t.Error("config.Service.Author not set")
 	}
-	if config.Service.Summary != "my service" {
-		t.Error("config.Service.Summary not set")
+	if config.Service.Description != "my service" {
+		t.Error("config.Service.Description not set")
 	}
 	if len(config.Service.Keywords) != 1 {
 		t.Fatal("config.Service.Keywords does not contain the correct amount of parameters")

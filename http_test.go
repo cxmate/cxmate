@@ -18,7 +18,7 @@ func executeRequest(req *http.Request) *http.Response {
 	m := &Mate{
 		Config: &Config{
 			Service: ServiceConfig{
-				Name: "test",
+				Title: "test",
 			},
 		},
 		Logger: &Logger{log: entry},
