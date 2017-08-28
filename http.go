@@ -28,7 +28,7 @@ func NewHTTPError(service string, message string, status int) *HTTPError {
 	return &HTTPError{
 		Type:    fmt.Sprint("urn:cytoscape:ci:cxmate:", service, ":", status),
 		Message: message,
-		Link:    "http://github.com/ericsage/cxmate",
+		Link:    "http://github.com/cxmate/cxmate",
 		Status:  status,
 	}
 }

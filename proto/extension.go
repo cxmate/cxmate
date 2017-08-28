@@ -108,7 +108,7 @@ func NetworkElementFromJSON(label string, eleType string, dec *json.Decoder) (*N
 }
 
 func NetworkElementToJSON(w io.Writer, e *NetworkElement) error {
-	m := jsonpb.Marshaler{}
+	m := jsonpb.Marshaler{EmitDefaults: true}
 	ele := e.GetElement()
 	switch ele.(type) {
 	case *NetworkElement_Error:
