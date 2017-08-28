@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"testing"
 
@@ -502,7 +503,7 @@ func TestGenerateAspect(t *testing.T) {
 	if err := g.aspect("test network", "nodes"); err != nil {
 		t.Error(err)
 	}
-	expected := `{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"},{"@id":"1"}]}`
+	expected := `{"nodes":[{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""}]}`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -563,7 +564,7 @@ func TestGenerateNetwork(t *testing.T) {
 	if err := g.network("test network", []string{"nodes", "edges"}); err != nil {
 		t.Error(err)
 	}
-	expected := `[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"},{"name":"edges"}]},{"nodes":[{"@id":"1"}]},{"edges":[{"@id":"1"}]},{"nodes":[{"@id":"1"},{"@id":"1"}]},{"edges":[{"@id":"1"}]}]`
+	expected := `[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"},{"name":"edges"}]},{"nodes":[{"@id":"1","n":"","r":""}]},{"edges":[{"@id":"1","s":"0","t":"0","i":""}]},{"nodes":[{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""}]},{"edges":[{"@id":"1","s":"0","t":"0","i":""}]}]`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -634,7 +635,7 @@ func TestGenerateStream(t *testing.T) {
 	if err := g.stream(conf); err != nil {
 		t.Error(err)
 	}
-	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
+	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1","s":"0","t":"0","i":""},{"@id":"1","s":"0","t":"0","i":""}]}]]`
 	if buf.String() != expected {
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
@@ -697,8 +698,9 @@ func TestRun(t *testing.T) {
 	if err := genConf.generate(buf, s, false); err != nil {
 		t.Error(err)
 	}
-	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1"},{"@id":"1"},{"@id":"1"}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1"},{"@id":"1"}]}]]`
+	expected := `[[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"nodes"}]},{"nodes":[{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""},{"@id":"1","n":"","r":""}]}],[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"name":"edges"}]},{"edges":[{"@id":"1","s":"0","t":"0","i":""},{"@id":"1","s":"0","t":"0","i":""}]}]]`
 	if buf.String() != expected {
+		fmt.Println(len(expected), len(buf.String()))
 		t.Errorf("Expected %s found %s", expected, buf.String())
 	}
 }
