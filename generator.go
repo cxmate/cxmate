@@ -108,12 +108,25 @@ func (g *Generator) network(network string, aspects []string) error {
 			break
 		}
 		elementAspect, _ := g.elements.peekAspect()
-		if err := g.rune(','); err != nil {
-			return err
+		hasAspect := false
+		for _, aspect := range aspects {
+			if aspect == elementAspect {
+				hasAspect = true
+			}
 		}
-		if err := g.aspect(network, elementAspect); err != nil {
+		if hasAspect {
+			if err := g.rune(','); err != nil {
 			return err
+			}
+			if err := g.aspect(network, elementAspect); err != nil {
+				return err
+			}
+		} else {
+			if _, err := g.elements.pop(); err != nil {
+				return err
+			}
 		}
+		
 	}
 	if err := g.closeBrackets("]"); err != nil {
 		return err
