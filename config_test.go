@@ -14,7 +14,10 @@ var completeConfig = `
 			"debug": true,
 			"file": "cxmate.log",
 			"format": "json"
-		}
+		},
+		"ReadTimeout": 1,
+		"WriteTimeout": 2,
+		"IdleTimeout": 3
 	},
 	"service": {
 		"location": "localhost:8080",
@@ -57,7 +60,16 @@ func TestLoadConfig(t *testing.T) {
 		t.Error("config.General.Logger.File not set")
 	}
 	if config.General.Logger.Format != "json" {
-		t.Error("config.General.Format not set")
+		t.Error("config.General.Logger.Format not set")
+	}
+	if config.General.ReadTimeout != 1 {
+		t.Error("config.General.ReadTimeout not set")
+	}
+	if config.General.WriteTimeout != 2 {
+		t.Error("config.General.WriteTimeout not set")
+	}
+	if config.General.IdleTimeout != 3 {
+		t.Error("config.General.IdleTimeout not set")
 	}
 	if config.Service.Location != "localhost:8080" {
 		t.Error("config.Service.Location not set")

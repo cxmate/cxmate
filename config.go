@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 )
 
 //Config represents the configuration of the entire application. All configuration
@@ -25,11 +26,26 @@ type GeneralConfig struct {
 	Domain string `json:"domain"`
 	//Debug will turn on verbose logging and print out configuration parameters.
 	Logger LogConfig `json:"logger"`
+	//ReadTimeout configures the HTTP timeout for reading a request body
+	ReadTimeout time.Duration
+	//WriteTimeout configures the HTTP timeout for writing a response body
+	WriteTimeout time.Duration
+	//IdleTimeout configures the HTTP timeout for TCP keep-alive
+	IdleTimeout time.Duration
 }
 
 func (c GeneralConfig) validate() error {
 	if c.Location == "" {
 		return errors.New("general config missing required location field")
+	}
+	if c.ReadTimeout == 0 {
+		c.ReadTimeout = 5 * time.Second
+	}
+	if c.WriteTimeout == 0 {
+		c.WriteTimeout = 10 * time.Second
+	}
+	if c.IdleTimeout == 0 {
+		c.IdleTimeout = 120 * time.Second
 	}
 	return nil
 }
