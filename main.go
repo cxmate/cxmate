@@ -127,8 +127,15 @@ func main() {
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", cxmate.handleRoot)
+	srv := &http.Server{
+		Addr:         cxmate.Config.General.Location,
+		ReadTimeout:  cxmate.Config.General.ReadTimeout,
+		WriteTimeout: cxmate.Config.General.WriteTimeout,
+		IdleTimeout:  cxmate.Config.General.IdleTimeout,
+		Handler:      mux,
+	}
 	cxmate.Logger.Infoln("cxMate now listening on", cxmate.Config.General.Location, "connected to service on", cxmate.Config.Service.Location)
-	logFatalln(http.ListenAndServe(cxmate.Config.General.Location, mux))
+	logFatalln(srv.ListenAndServe())
 }
 
 //WriteDetector determines if a write has been made to a writer
