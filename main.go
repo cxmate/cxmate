@@ -5,6 +5,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 //Mate holds the configuration and connection the backing service
@@ -127,6 +129,7 @@ func main() {
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", cxmate.handleRoot)
+	mux.Handle("/metrics", promhttp.Handler())
 	cxmate.Logger.Infoln("cxMate now listening on", cxmate.Config.General.Location, "connected to service on", cxmate.Config.Service.Location)
 	logFatalln(http.ListenAndServe(cxmate.Config.General.Location, mux))
 }
