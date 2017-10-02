@@ -5,4 +5,6 @@ COPY . .
 
 RUN go-wrapper install
 
+WORKDIR /cxmate
+
 CMD ["cxmate"]
