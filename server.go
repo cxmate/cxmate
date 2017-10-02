@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 //Mate holds the configuration and connection the backing service
@@ -128,6 +130,7 @@ func (w *WriteDetector) WriteHeader(code int) {
 func (m *Mate) serve() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", m.handleRoot)
+	mux.Handle(m.Config.General.MetricsEndpoint, promhttp.Handler())
 	srv := &http.Server{
 		Addr:         m.Config.General.Location,
 		ReadTimeout:  m.Config.General.ReadTimeout,
