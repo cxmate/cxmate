@@ -34,7 +34,7 @@ type GeneralConfig struct {
 	IdleTimeout time.Duration
 }
 
-func (c GeneralConfig) validate() error {
+func (c *GeneralConfig) validate() error {
 	if c.Location == "" {
 		return errors.New("general config missing required location field")
 	}
@@ -80,7 +80,7 @@ type ServiceConfig struct {
 	SingletonOutput bool `json:"singletonOutput"`
 }
 
-func (c ServiceConfig) validate() error {
+func (c *ServiceConfig) validate() error {
 	if c.Location == "" {
 		return errors.New("service config missing required location field")
 	}
@@ -121,6 +121,18 @@ func loadFrom(r io.Reader) (*Config, error) {
 	dec := json.NewDecoder(r)
 	if err := dec.Decode(c); err != nil {
 		return nil, err
+	}
+	if err := c.General.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
+	}
+	if err := c.Service.Parameters.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
+	}
+	if err := c.Service.Input.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
+	}
+	if err := c.Service.Output.validate(); err != nil {
+		return nil, fmt.Errorf("config validation error: %v", err)
 	}
 	return c, nil
 }

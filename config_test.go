@@ -35,6 +35,20 @@ var completeConfig = `
 				"type": "integer",
 				"format": "test"
 			}
+		],
+		"input": [
+			{
+				"label": "Input",
+				"description": "A test input network",
+				"aspects": ["nodes"]
+			}
+		],
+		"output": [
+			{
+				"label": "Output",
+				"description": "A test output network",
+				"aspects": ["nodes"]
+			}
 		]
 	}
 }
