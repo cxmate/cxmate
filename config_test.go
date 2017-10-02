@@ -15,6 +15,7 @@ var completeConfig = `
 			"file": "cxmate.log",
 			"format": "json"
 		},
+		"metricsEndpoint": "/custom_metrics",
 		"ReadTimeout": 1,
 		"WriteTimeout": 2,
 		"IdleTimeout": 3
@@ -75,6 +76,9 @@ func TestLoadConfig(t *testing.T) {
 	}
 	if config.General.Logger.Format != "json" {
 		t.Error("config.General.Logger.Format not set")
+	}
+	if config.General.MetricsEndpoint != "/custom_metrics" {
+		t.Error("config.General.metricsEndpoint not set")
 	}
 	if config.General.ReadTimeout != 1 {
 		t.Error("config.General.ReadTimeout not set")

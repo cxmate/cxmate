@@ -26,17 +26,22 @@ type GeneralConfig struct {
 	Domain string `json:"domain"`
 	//Debug will turn on verbose logging and print out configuration parameters.
 	Logger LogConfig `json:"logger"`
+	//MetricsEndpoint will set the route for served prometheus metrics
+	MetricsEndpoint string `json:"metricsEndpoint"`
 	//ReadTimeout configures the HTTP timeout for reading a request body
-	ReadTimeout time.Duration
+	ReadTimeout time.Duration `json:"readTimeout"`
 	//WriteTimeout configures the HTTP timeout for writing a response body
-	WriteTimeout time.Duration
+	WriteTimeout time.Duration `json:"writeTimeout"`
 	//IdleTimeout configures the HTTP timeout for TCP keep-alive
-	IdleTimeout time.Duration
+	IdleTimeout time.Duration `json:"idleTimeout"`
 }
 
 func (c *GeneralConfig) validate() error {
 	if c.Location == "" {
 		return errors.New("general config missing required location field")
+	}
+	if c.MetricsEndpoint == "" {
+		c.MetricsEndpoint = "/metrics"
 	}
 	if c.ReadTimeout == 0 {
 		c.ReadTimeout = 5 * time.Second
