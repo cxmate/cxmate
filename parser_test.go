@@ -253,6 +253,27 @@ func TestParseNetwork(t *testing.T) {
 	}
 }
 
+const rawJSON = `{"key":"test"}`
+
+func TestParseJSON(t *testing.T) {
+	p, s := MockParser(rawJSON)
+	go func(t *testing.T, s chan *Message) {
+		testJSON(t, s, "test raw", rawJSON)
+	}(t, s)
+	if err := p.rawJSON("test raw"); err != nil {
+		t.Errorf("Could not parse raw JSON, error: %v", err)
+	}
+}
+
+const rawBadJSON = `{`
+
+func TestParseBadJSON(t *testing.T) {
+	p, _ := MockParser(rawBadJSON)
+	if err := p.rawJSON("test raw"); err == nil {
+		t.Fatal("Expected error from reading bad JSON, error was nil")
+	}
+}
+
 func TestParseStream(t *testing.T) {
 	p, s := MockParser(fmt.Sprintf("[%s,%s]", network, network))
 	go func(t *testing.T, s chan *Message) {
@@ -282,7 +303,7 @@ func TestParseStream(t *testing.T) {
 func testNode(t *testing.T, s chan *Message, id int64, name string, network string) {
 	m, ok := <-s
 	if !ok {
-		t.Fatal("Channel shouldnot be closed")
+		t.Fatal("Channel should not be closed")
 	}
 	if m.ele.Label != network {
 		t.Errorf("Expected network label %s found %s", network, m.ele.Label)
@@ -296,6 +317,21 @@ func testNode(t *testing.T, s chan *Message, id int64, name string, network stri
 	}
 	if node.Node.Name != name {
 		t.Errorf("Expected node name %s found %s", name, node.Node.Name)
+	}
+	close(m.errChan)
+}
+
+func testJSON(t *testing.T, s chan *Message, label string, expectedJSON string) {
+	m, ok := <-s
+	if !ok {
+		t.Fatal("Channel shoud not be closed")
+	}
+	if m.ele.Label != label {
+		t.Errorf("Expected label %s found %s", label, m.ele.Label)
+	}
+	rawJSON := m.ele.GetJson()
+	if rawJSON != expectedJSON {
+		t.Errorf("Expected %s as raw JSON, found %s", expectedJSON, rawJSON)
 	}
 	close(m.errChan)
 }

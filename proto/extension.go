@@ -111,8 +111,8 @@ func NetworkElementToJSON(w io.Writer, e *NetworkElement) error {
 	m := jsonpb.Marshaler{EmitDefaults: true}
 	ele := e.GetElement()
 	switch ele.(type) {
-	case *NetworkElement_Error:
-		m.Marshal(w, e.GetError())
+	case *NetworkElement_Json:
+		io.WriteString(w, e.GetJson())
 	case *NetworkElement_Node:
 		m.Marshal(w, e.GetNode())
 	case *NetworkElement_Edge:
@@ -166,8 +166,6 @@ func NetworkElementToJSON(w io.Writer, e *NetworkElement) error {
 func GetAspectName(e *NetworkElement) string {
 	ele := e.GetElement()
 	switch ele.(type) {
-	case *NetworkElement_Error:
-		return "error"
 	case *NetworkElement_Node:
 		return "nodes"
 	case *NetworkElement_Edge:

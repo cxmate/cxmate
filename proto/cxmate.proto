@@ -15,7 +15,7 @@ message NetworkElement {
   string label = 1;
   oneof element {
     Parameter parameter = 2;
-    Error error = 3;
+    string json = 3;
     Node node = 4;
     Edge edge = 5;
     NodeAttribute nodeAttribute = 6;
@@ -54,14 +54,6 @@ message Parameter {
     int64 integerValue = 5;
     double numberValue = 6;
   }
-}
-
-// Error represents a service error.
-message Error {
-  int64 status = 1;
-  string type = 2;
-  string message = 3;
-  string link = 4;
 }
 
 // ********** BASE ELEMENTS **********
