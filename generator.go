@@ -87,10 +87,7 @@ func (g *Generator) stream(networks []NetworkDescription) error {
 			return fmt.Errorf("error while generating %s at position %d: %v", n.Label, i, err)
 		}
 	}
-	if err := g.closeBrackets("]"); err != nil {
-		return err
-	}
-	return nil
+	return g.closeBrackets("]")
 }
 
 // network generates a single network.
@@ -134,10 +131,7 @@ func (g *Generator) network(network string, aspects []string) error {
 		}
 
 	}
-	if err := g.closeBrackets("]"); err != nil {
-		return err
-	}
-	return nil
+	return g.closeBrackets("]")
 }
 
 // numberVerfication generates a numberVerification aspect.
@@ -148,10 +142,7 @@ func (g *Generator) numberVerification(network string) error {
 			map[string]int64{"longNumber": 281474976710655},
 		},
 	}
-	if err := g.value(nv); err != nil {
-		return err
-	}
-	return nil
+	return g.value(nv)
 }
 
 // preMetadata generates the metadata aspect that goes before any user defined aspects. preMetadata takes a list of aspect names, which is uses to populate the name field for each aspect metadata element (the only required field in preMetadata).
@@ -166,10 +157,7 @@ func (g *Generator) preMetadata(network string, aspects []string) error {
 	pm := map[string][]Metadata{
 		"metaData": md,
 	}
-	if err := g.value(pm); err != nil {
-		return err
-	}
-	return nil
+	g.value(pm)
 }
 
 // aspect generates a single aspect by reading elements until the elements aspect or network no longer match the provided parameters.
@@ -204,10 +192,7 @@ func (g *Generator) aspect(network string, aspect string) error {
 		}
 		proto.NetworkElementToJSON(g.w, element)
 	}
-	if err := g.closeBrackets("]}"); err != nil {
-		return err
-	}
-	return nil
+	return g.closeBrackets("]}")
 }
 
 func (g *Generator) rawJSON(label string) error {

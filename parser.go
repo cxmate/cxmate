@@ -86,10 +86,7 @@ func (p *Parser) stream(networks []NetworkDescription) error {
 			return fmt.Errorf("error parsing %s at position %d: %v", n.Label, i, err)
 		}
 	}
-	if err := p.bracket(']', "a closing brace of a CX stream"); err != nil {
-		return err
-	}
-	return nil
+	return p.bracket(']', "a closing brace of a CX stream")
 }
 
 // network parses a single network, streaming any required aspects to the service.
@@ -109,10 +106,7 @@ func (p *Parser) network(network string, aspects []string) error {
 			return err
 		}
 	}
-	if err := p.bracket(']', "a closing brace of a CX encoded network"); err != nil {
-		return err
-	}
-	return nil
+	return p.bracket(']', "a closing brace of a CX encoded network")
 }
 
 // numberVerification parses the numberVerification aspect and checks that the correct longNumber has been set.
@@ -211,10 +205,7 @@ func (p *Parser) aspect(network string, aspects []string) error {
 	if err := p.bracket(']', "a closing brace of an aspect element list containing "+aspect+" aspect elements"); err != nil {
 		return err
 	}
-	if err := p.bracket('}', "a closing bracket of an aspect of type "+aspect); err != nil {
-		return err
-	}
-	return nil
+	return p.bracket('}', "a closing bracket of an aspect of type "+aspect)
 }
 
 // more checks if the next parsable token is a closing bracket.

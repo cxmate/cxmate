@@ -103,10 +103,7 @@ func (m *Mate) generateCX(s *ServiceStream, w io.Writer) error {
 	m.Logger.Debugln("Generating CX")
 	receive := make(chan *Message)
 	s.OpenReceive(receive)
-	if err := m.Config.Service.Output.generate(w, receive, m.Config.Service.SingletonOutput); err != nil {
-		return err
-	}
-	return nil
+	return m.Config.Service.Output.generate(w, receive, m.Config.Service.SingletonOutput)
 }
 
 //WriteDetector determines if a write has been made to a writer
