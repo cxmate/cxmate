@@ -157,7 +157,7 @@ func (g *Generator) preMetadata(network string, aspects []string) error {
 	pm := map[string][]Metadata{
 		"metaData": md,
 	}
-	g.value(pm)
+	return g.value(pm)
 }
 
 // aspect generates a single aspect by reading elements until the elements aspect or network no longer match the provided parameters.
