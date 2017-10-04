@@ -17,6 +17,8 @@ type NetworkDescription struct {
 	Description string `json:"description"`
 	//Aspects should contain a list of strings, the required aspects for this network.
 	Aspects []string `json:"aspects"`
+	//Type dictates the content and interpretation of the NetworkDescription
+	Type string
 }
 
 // ParserConfig contains a description of each network the service will input.
@@ -36,8 +38,10 @@ func (c ParserConfig) validate() error {
 			return fmt.Errorf("invalid config: output position: %d error: duplicate label found: %s", i, n.Label)
 		}
 		used[n.Label] = true
-		if len(n.Aspects) == 0 {
-			return fmt.Errorf("invalid config for input network %s at position %d: aspect list must not be empty", n.Label, i)
+		if n.Type == "" {
+			if len(n.Aspects) == 0 {
+				return fmt.Errorf("invalid config for input network %s at position %d: aspect list must not be empty", n.Label, i)
+			}
 		}
 		logDebug("Valid configuration found for input network", n.Label, "with required apsects", n.Aspects)
 	}
@@ -58,7 +62,11 @@ func (c ParserConfig) parse(r io.Reader, s chan<- *Message, singleton bool) erro
 	}
 	var err error
 	if singleton {
-		err = p.network(c[0].Label, c[0].Aspects)
+		if c[0].Type == "json" {
+			err = p.rawJSON(c[0].Label)
+		} else {
+			err = p.network(c[0].Label, c[0].Aspects)
+		}
 	} else {
 		err = p.stream(c)
 	}
@@ -214,7 +222,7 @@ func (p *Parser) more() bool {
 	return p.dec.More()
 }
 
-// bracket parses a token tok match against a provided bracket rune.
+// bracket parses a token to match against a provided bracket rune.
 func (p *Parser) bracket(expects rune, description string) error {
 	token, err := p.dec.Token()
 	if err != nil {
@@ -250,6 +258,21 @@ func (p *Parser) value(value interface{}, description string) error {
 		return fmt.Errorf("expected %s but could not decode value, error: %v", description, err)
 	}
 	return nil
+}
+
+//rawJSON parses an element into a json.RawMessage
+func (p *Parser) rawJSON(label string) error {
+	var j json.RawMessage
+	err := p.dec.Decode(&j)
+	if err != nil {
+		return fmt.Errorf("error parsing raw JSON for label %s, error: %v", label, err)
+	}
+	ele := &proto.NetworkElement{
+		Label:   label,
+		Element: &proto.NetworkElement_Json{Json: string(j)},
+	}
+	return SendMessage(ele, p.sendChan)
+
 }
 
 //element parses an aspect element to protobuf and sends it to the service.

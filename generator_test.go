@@ -570,6 +570,39 @@ func TestGenerateNetwork(t *testing.T) {
 	}
 }
 
+func TestGenerateJSON(t *testing.T) {
+	s := make(chan *Message, 2)
+	e := &proto.NetworkElement{
+		Label:   "test network",
+		Element: &proto.NetworkElement_Json{Json: `{"key":"value"}`},
+	}
+	s <- &Message{
+		ele: e,
+		err: nil,
+	}
+	s <- &Message{
+		ele: nil,
+		err: io.EOF,
+	}
+	stream, err := newElementStream(s)
+	if err != nil {
+		t.Error(err)
+	}
+	buf := bytes.NewBufferString("")
+	g := &Generator{
+		w:        buf,
+		brackets: newBracketStack(),
+		elements: stream,
+	}
+	if err := g.rawJSON("test raw json"); err != nil {
+		t.Error(err)
+	}
+	expected := `{"key":"value"}`
+	if buf.String() != expected {
+		t.Errorf("Expected %s found %s", expected, buf.String())
+	}
+}
+
 func TestGenerateStream(t *testing.T) {
 	s := make(chan *Message, 20)
 	conf := []NetworkDescription{

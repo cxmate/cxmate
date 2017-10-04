@@ -26,8 +26,10 @@ func (c GeneratorConfig) validate() error {
 			return fmt.Errorf("invalid config: output position: %d error: duplicate label found: %s", i, n.Label)
 		}
 		used[n.Label] = true
-		if len(n.Aspects) == 0 {
-			return fmt.Errorf("invalid config: output position: %d networks: %s error: aspect list must not be empty", i, n.Label)
+		if n.Type == "" {
+			if len(n.Aspects) == 0 {
+				return fmt.Errorf("invalid config: output position: %d networks: %s error: aspect list must not be empty", i, n.Label)
+			}
 		}
 		logDebugln("Config loaded: output position:", i, "network:", n.Label, "required apsects:", n.Aspects)
 	}
@@ -55,7 +57,11 @@ func (c GeneratorConfig) generate(w io.Writer, s <-chan *Message, singleton bool
 	}
 	defer g.closeRemainingBrackets()
 	if singleton {
-		err = g.network(c[0].Label, c[0].Aspects)
+		if c[0].Type == "json" {
+			err = g.rawJSON(c[0].Label)
+		} else {
+			err = g.network(c[0].Label, c[0].Aspects)
+		}
 	} else {
 		err = g.stream(c)
 	}
@@ -116,7 +122,7 @@ func (g *Generator) network(network string, aspects []string) error {
 		}
 		if hasAspect {
 			if err := g.rune(','); err != nil {
-			return err
+				return err
 			}
 			if err := g.aspect(network, elementAspect); err != nil {
 				return err
@@ -126,7 +132,7 @@ func (g *Generator) network(network string, aspects []string) error {
 				return err
 			}
 		}
-		
+
 	}
 	if err := g.closeBrackets("]"); err != nil {
 		return err
@@ -201,6 +207,16 @@ func (g *Generator) aspect(network string, aspect string) error {
 	if err := g.closeBrackets("]}"); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (g *Generator) rawJSON(label string) error {
+	logDebugln("Generating", label, "as raw JSON")
+	element, err := g.elements.pop()
+	if err != nil {
+		return fmt.Errorf("Could not accept raw JSON for %s, error: %v", label, err)
+	}
+	proto.NetworkElementToJSON(g.w, element)
 	return nil
 }
 
