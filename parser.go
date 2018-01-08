@@ -82,18 +82,54 @@ func (p *Parser) stream(networks []NetworkDescription) error {
 		return err
 	}
 	for i, n := range networks {
-		if err := p.network(n.Label, n.Aspects); err != nil {
-			return fmt.Errorf("error parsing %s at position %d: %v", n.Label, i, err)
+		t, err := p.dec.Token()
+		if err != nil {
+			return err
+		}
+		b, ok := t.(json.Delim)
+		if !ok {
+			return fmt.Errorf("could not cast token to opening bracket")
+		}
+		if delim == '[' {
+			if err := p.network(n.Label, n.Aspects); err != nil {
+				return fmt.Errorf("error parsing %s at position %d: %v", n.Label, i, err)
+			}
+		} else if delim == '{' {
+			if err = p.link(n.Label, n.Aspects); err != nil {
+				return fmt.Errorf("error processing %s at position %d as a remote link: %v", n.Label, i, err)
+			}
+		} else {
+			return fmt.Errorf("opeing delimeter must be a { or [")
 		}
 	}
 	return p.bracket(']', "a closing brace of a CX stream")
 }
 
-// network parses a single network, streaming any required aspects to the service.
-func (p *Parser) network(network string, aspects []string) error {
-	logDebug("Parsing", network, "with required aspects", aspects)
-	if err := p.bracket('[', "an opening brace of a CX encoded network"); err != nil {
+func (p *Parser) link(network string, aspects []string) error {
+	logDebug("Parsing", network, "link with required aspects", aspects)
+	for _ := range []int{1, 2, 3, 4} {
+		token, err := p.dec.Token()
+		if err != nil {
+			return fmt.Errorf("Could not fetch link field error: %v", err)
+		}
+		name, ok := token.(string)
+		if !ok {
+			return fmt.Errorf("Could not cast link field to string")
+		}
+		fmt.Println(name)
+	}
+	if err := p.bracker('}', "a closing brace of a link document"); err != nil {
 		return err
+	}
+}
+
+// network parses a single network, streaming any required aspects to the service.
+func (p *Parser) network(network string, aspects []string, lookedahead bool) error {
+	logDebug("Parsing", network, "with required aspects", aspects)
+	if !lookedahead {
+		if err := p.bracket('[', "an opening brace of a CX encoded network"); err != nil {
+			return err
+		}
 	}
 	if err := p.numberVerification(network); err != nil {
 		return err
